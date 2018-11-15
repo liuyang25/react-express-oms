@@ -1,0 +1,57 @@
+.main {
+  text-align: center;
+  min-height: 100vh;
+
+  .logo {
+    animation: App-logo-spin infinite 20s linear;
+    height: 64px;
+    width: 64px;
+  }
+
+  .header {
+    text-align: left;
+    background-color: #222;
+    color: white;
+  }
+
+  .intro {
+    font-size: large;
+  }
+  .user-input {
+    width: 400px;
+  }
+
+  .menu-text {
+    color: white;
+  }
+  .menu-button {
+    height: 48px;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    background-color: #222;
+    border-radius: 3px;
+    text-align: center;
+    color: white;
+    i {
+      line-height: 48px;
+    }
+    &:hover {
+      background-color: #1890ff;
+    }
+  }
+  .footer {
+    background-image: url('/assets/images/footer.png');
+    background-size: 100% 100%;
+  }
+
+  @keyframes App-logo-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
