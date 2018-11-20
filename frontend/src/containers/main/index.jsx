@@ -2,7 +2,7 @@ import * as React from 'react'
 import { mainPages, mainIndex } from '@/router/pages'
 import { Link } from 'react-router-dom'
 import { inject, observer } from 'mobx-react'
-import { Layout, Menu, Icon, /*Input*/ } from 'antd'
+import { Layout, Breadcrumb, Card, Menu, Icon, /*Input*/ } from 'antd'
 import LoginInfo from '@/components/loginInfo'
 import { LoginStore } from '@/stores/loginStore'
 import './styles.less'
@@ -54,6 +54,54 @@ class Main extends React.Component<Props> {
       )
     }
   }
+  renderBreadcrumb2(){
+    const path = this.props.location.pathname
+    const findPath = (route) => {
+      if (!route) {
+        return ''
+      }
+      for (let i = 0; i < route.length; ++i) {
+        if (path.indexOf(route[i].path) > -1) {
+          return '/' + route[i].name + findPath(route[i].pages)
+        }
+      }
+    }
+    return <Card style={{textAlign:'left'}}>{findPath(mainPages)}</Card>
+  }
+  
+  renderBreadcrumb(){
+    const path = this.props.location.pathname
+    const breadcrumbs = []
+    const findPath = (route) => {
+      if (!route) {
+        return breadcrumbs
+      }
+      for (let i = 0; i < route.length; ++i) {
+        if (path.indexOf(route[i].path) > -1) {
+          breadcrumbs.push(
+            <Breadcrumb.Item key={route[i].path}>
+              {route[i].icon&&<Icon type={route[i].icon}></Icon>}
+              {route[i].name}
+            </Breadcrumb.Item>
+          )
+          findPath(route[i].pages)
+          return breadcrumbs
+        }
+      }
+    }
+    return (
+      <Card style={{textAlign:'left'}}>
+        <Breadcrumb>{findPath(mainPages)}</Breadcrumb>
+      </Card>
+    )
+    // return <Card style={{textAlign:'left'}}>{findPath(mainPages)}</Card>
+    /*<Breadcrumb>
+      <Breadcrumb.Item href="">
+        <Icon type="home" />
+      </Breadcrumb.Item>
+      */
+  }
+
   render() {
     const menus = mainPages.map(this.renderMenu.bind(this))
 
@@ -119,9 +167,12 @@ class Main extends React.Component<Props> {
               <LoginInfo {...this.props} />
             </Header>
             <Content style={{ margin: '0 16px', padding:'12px' }}>
-              {/*mainIndex()*/}
-              { this.props.loginStore.userName ? mainIndex():jumpLogin()
+              {this.renderBreadcrumb()}
+              <Card>
+                {/*mainIndex()*/}
+                { this.props.loginStore.userName ? mainIndex():jumpLogin()
               }
+              </Card>
             </Content>
             <Footer style={{ textAlign: 'center' }} className="footer">
               mail:liuyang25@126.com
