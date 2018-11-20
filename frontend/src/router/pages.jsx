@@ -26,6 +26,7 @@ export const mainPages: Page[] = [
   {
     name: '物流',
     icon: 'car',
+    path: '/logistics',
     pages: [
       {
         component: Logistics,
@@ -40,8 +41,9 @@ export const mainPages: Page[] = [
     ]
   },
   {
-    name: '用户',
+    name: '客户',
     icon: 'smile',
+    path: '/customer',
     pages: [
       {
         component: Customers,
@@ -58,6 +60,7 @@ export const mainPages: Page[] = [
   {
     name: '订单',
     icon: 'file-text',
+    path: '/order',
     pages: [
       {
         component: OrderList,
