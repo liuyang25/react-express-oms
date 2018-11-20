@@ -18,7 +18,7 @@ class LogisticsAdd extends React.Component<Props> {
         console.error(err)
       }
       axios.post(api.logistics.add, values).then(res => {
-        if (res.data.code == 200) {
+        if (res.data.code === 200) {
           this.props.form.resetFields()
           message.info('创建成功')
         } else {

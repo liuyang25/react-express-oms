@@ -12,7 +12,7 @@ class Logistics extends React.Component<Props> {
     }
     this.tableColumns = [
       { dataIndex: 'goods_code', title: '商品代码', width: 100, fixed: 'left', },
-      { dataIndex: 'time', title: '时间', width: 100, fixed: 'left' },
+      { dataIndex: 'time', title: '下单日期', width: 100, fixed: 'left' },
       { dataIndex: 'infomation', title: '信息描述' },
       { dataIndex: 'comment', title: '备注' },
       { dataIndex: 'creator', title: '创建人' }
