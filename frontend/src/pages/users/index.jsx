@@ -46,6 +46,7 @@ class Users extends React.Component<Props> {
         <Table
           loading={this.state.loading}
           className="table"
+          bordered
           columns={this.tableColumns}
           dataSource={this.state.tableData}
         />

@@ -80,7 +80,8 @@ router.post(api.orderAdd, order.addOne);
 router.post(api.orderDelete, order.deleteOne);
 
 
-
+//test
+router.get('/api/test', order.test)
 
 
 

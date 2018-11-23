@@ -6,6 +6,7 @@ import { Layout, Breadcrumb, Card, Menu, Icon, /*Input*/ } from 'antd'
 import LoginInfo from '@/components/loginInfo'
 import { LoginStore } from '@/stores/loginStore'
 import './styles.less'
+import Proverbs from '@/components/proverbs'
 
 interface Props {
   loginStore: LoginStore;
@@ -20,7 +21,8 @@ const { Header, Content, Footer, Sider } = Layout
 class Main extends React.Component<Props> {
   state = {
     collapsed: true,
-    userNameInput: ''
+    userNameInput: '',
+    proverbIndex: 0
   }
   userNameInputNode: any
   onCollapse = () => {
@@ -90,7 +92,7 @@ class Main extends React.Component<Props> {
       }
     }
     return (
-      <Card style={{textAlign:'left'}}>
+      <Card style={{textAlign:'left'}} bodyStyle={{padding: '8px 20px'}}>
         <Breadcrumb>{findPath(mainPages)}</Breadcrumb>
       </Card>
     )
@@ -163,7 +165,7 @@ class Main extends React.Component<Props> {
           </Sider>
           <Layout>
             <Header className="header">
-              <span>Welcome to React</span>
+              <Proverbs/>
               <LoginInfo {...this.props} />
             </Header>
             <Content style={{ margin: '0 16px', padding:'12px' }}>

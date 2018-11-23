@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Row, Col } from 'antd';
-import './style.less'
+import './styles.less'
 
 interface Props {
   data: {} 

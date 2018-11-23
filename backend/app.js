@@ -12,7 +12,7 @@ app.use(bodyParser.json())
 
 app.use(
   session({
-    secret: 'fuckupig',
+    secret: 'jianxiang',
     cookie: { maxAge: 3600000 },
     resave: true,
     saveUninitialized: true
@@ -33,7 +33,7 @@ app.use(function(req, res, next) {
 
   console.log(req.url)
   console.log(req.session.login)
-  if ((!req.session || !req.session.login) && req.url.indexOf('login')==-1) {
+  if ((!req.session || !req.session.login) && req.url.indexOf('login')==-1&&req.url.indexOf('test')==-1) {
     console.log('!!!')
     res.send({ code: 1, msg: '请重新登录' })
   } else {
