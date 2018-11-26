@@ -2,7 +2,7 @@ import * as React from 'react'
 import { mainPages, mainIndex } from '@/router/pages'
 import { Link } from 'react-router-dom'
 import { inject, observer } from 'mobx-react'
-import { Layout, Breadcrumb, Card, Menu, Icon, /*Input*/ } from 'antd'
+import { Layout, Breadcrumb, Card, Menu, Icon /*Input*/ } from 'antd'
 import LoginInfo from '@/components/loginInfo'
 import { LoginStore } from '@/stores/loginStore'
 import './styles.less'
@@ -12,7 +12,7 @@ interface Props {
   loginStore: LoginStore;
 }
 
-const logo = require('@/logo.svg')
+const logo = require('@/assets/images/zjp.jpg')
 const { SubMenu } = Menu
 const { Header, Content, Footer, Sider } = Layout
 
@@ -56,9 +56,9 @@ class Main extends React.Component<Props> {
       )
     }
   }
-  renderBreadcrumb2(){
+  renderBreadcrumb2() {
     const path = this.props.location.pathname
-    const findPath = (route) => {
+    const findPath = route => {
       if (!route) {
         return ''
       }
@@ -68,13 +68,13 @@ class Main extends React.Component<Props> {
         }
       }
     }
-    return <Card style={{textAlign:'left'}}>{findPath(mainPages)}</Card>
+    return <Card style={{ textAlign: 'left' }}>{findPath(mainPages)}</Card>
   }
-  
-  renderBreadcrumb(){
+
+  renderBreadcrumb() {
     const path = this.props.location.pathname
     const breadcrumbs = []
-    const findPath = (route) => {
+    const findPath = route => {
       if (!route) {
         return breadcrumbs
       }
@@ -82,7 +82,7 @@ class Main extends React.Component<Props> {
         if (path.indexOf(route[i].path) > -1) {
           breadcrumbs.push(
             <Breadcrumb.Item key={route[i].path}>
-              {route[i].icon&&<Icon type={route[i].icon}></Icon>}
+              {route[i].icon && <Icon type={route[i].icon} />}
               {route[i].name}
             </Breadcrumb.Item>
           )
@@ -92,7 +92,7 @@ class Main extends React.Component<Props> {
       }
     }
     return (
-      <Card style={{textAlign:'left'}} bodyStyle={{padding: '8px 20px'}}>
+      <Card style={{ textAlign: 'left' }} bodyStyle={{ padding: '8px 20px' }}>
         <Breadcrumb>{findPath(mainPages)}</Breadcrumb>
       </Card>
     )
@@ -109,7 +109,7 @@ class Main extends React.Component<Props> {
 
     // 输入名字框
     const jumpLogin = () => {
-      this.props.history.push('/login') 
+      this.props.history.push('/login')
     }
     /*  const renderLogin = () => {
       const suffix = this.state.userNameInput 
@@ -139,49 +139,43 @@ class Main extends React.Component<Props> {
     */
 
     return (
-      <div className="main">
-        <Layout style={{ height: '100vh' }}>
-          <Sider collapsed={this.state.collapsed}>
-            <div className="logo">
+      <Layout className="main" style={{ height: '100%' }}>
+        <Sider collapsed={this.state.collapsed}>
+          <div className="logo">
             <Link to="/home">
               <img src={logo} className="logo" alt="logo" />
             </Link>
-            </div>
-            <Menu
-              theme="dark"
-              defaultSelectedKeys={['1']}
-              mode="inline"
-              style={{ textAlign: 'left' }}
-              inlineCollapsed={this.state.collapsed}
-            >
-              {menus}
-            </Menu>
-            <div
-              className="menu-button"
-              onClick={() => this.onCollapse()}
-            >
-              <Icon type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'} />
-            </div>
-          </Sider>
-          <Layout>
-            <Header className="header">
-              <Proverbs/>
-              <LoginInfo {...this.props} />
-            </Header>
-            <Content style={{ margin: '0 16px', padding:'12px' }}>
-              {this.renderBreadcrumb()}
-              <Card>
-                {/*mainIndex()*/}
-                { this.props.loginStore.userName ? mainIndex():jumpLogin()
-              }
-              </Card>
-            </Content>
+          </div>
+          <Menu
+            theme="dark"
+            defaultSelectedKeys={['1']}
+            mode="inline"
+            style={{ textAlign: 'left' }}
+            inlineCollapsed={this.state.collapsed}
+          >
+            {menus}
+          </Menu>
+          <div className="menu-button" onClick={() => this.onCollapse()}>
+            <Icon type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'} />
+          </div>
+        </Sider>
+        <Layout>
+          <Header className="header">
+            <Proverbs />
+            <LoginInfo {...this.props} />
+          </Header>
+          <Content className="content">
+            {this.renderBreadcrumb()}
+            <Card>
+              {/*mainIndex()*/}
+              {this.props.loginStore.userName ? mainIndex() : jumpLogin()}
+            </Card>
             <Footer style={{ textAlign: 'center' }} className="footer">
               mail:liuyang25@126.com
             </Footer>
-          </Layout>
+          </Content>
         </Layout>
-      </div>
+      </Layout>
     )
   }
 }

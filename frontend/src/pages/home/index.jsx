@@ -10,8 +10,7 @@ const imgStyle = {
 }
 const homeStyle = {
   textAlign: 'left',
-  paddingLeft: '50px',
-  paddingTop: '50px'
+  padding: '50px',
 }
 
 @inject('loginStore')
