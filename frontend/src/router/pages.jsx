@@ -24,23 +24,6 @@ export const mainPages: Page[] = [
     icon: 'user'
   },
   {
-    name: '物流',
-    icon: 'car',
-    path: '/logistics',
-    pages: [
-      {
-        component: Logistics,
-        name: '物流列表',
-        path: '/logistics/list'
-      },
-      {
-        component: LogisticsAdd,
-        name: '物流新增',
-        path: '/logistics/add'
-      }
-    ]
-  },
-  {
     name: '客户',
     icon: 'smile',
     path: '/customer',
@@ -68,7 +51,24 @@ export const mainPages: Page[] = [
         path: '/order/list'
       }
     ]
-  }
+  },
+  {
+    name: '物流',
+    icon: 'car',
+    path: '/logistics',
+    pages: [
+      {
+        component: Logistics,
+        name: '物流列表',
+        path: '/logistics/list'
+      },
+      {
+        component: LogisticsAdd,
+        name: '物流新增',
+        path: '/logistics/add'
+      }
+    ]
+  },
   /*{
     name: 'submenuDemo',
     icon: 'team',

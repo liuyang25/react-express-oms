@@ -12,7 +12,7 @@ class Customers extends React.Component<Props> {
       loading: false,
       searchParam: '',
       curPage: 1,
-      total: 0,
+      total: 0
     }
     this.tableColumns = [
       { dataIndex: 'customer_id', title: '客户代码' },
@@ -26,14 +26,16 @@ class Customers extends React.Component<Props> {
         key: 'operate',
         title: '操作',
         render: (text, record, index) => {
-          return <Button>呵呵</Button>
+          return (
+            <Button onClick={()=>this.handleDetail()}>详情</Button>
+          )
         }
       }
     ]
   }
   fetchData() {
     this.setState({
-      loading: true,
+      loading: true
     })
     var reqParams = {
       search_param: this.state.searchParam,
@@ -44,10 +46,14 @@ class Customers extends React.Component<Props> {
         this.setState({
           tableData: res.data.list,
           loading: false,
-          curPage: res.data.cur_page,
-      })
+          // curPage: res.data.cur_page,
+          total: res.data.total
+        })
       }
     })
+  }
+  handleDetail(){
+    this.props.history.push('/customr/detail')
   }
   handleSearch = v => {
     this.setState({
@@ -74,6 +80,15 @@ class Customers extends React.Component<Props> {
             defaultValue={this.state.searchParam}
             style={{ width: 200 }}
           />
+          <Button
+            type="primary"
+            style={{ float: 'right' }}
+            onClick={() => {
+              this.props.history.push('/customer/add')
+            }}
+          >
+            新增
+          </Button>
         </div>
         <Table
           loading={this.state.loading}
@@ -82,7 +97,13 @@ class Customers extends React.Component<Props> {
           dataSource={this.state.tableData}
           pagination={false}
         />
-        <Pagination style={{textAlign: 'right'}} onChange={this.handleChangePage} total={this.state.total} current={this.state.curPage}/>
+        <Pagination
+          style={{ textAlign: 'right' }}
+          onChange={this.handleChangePage}
+          total={this.state.total}
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+          current={this.state.curPage}
+        />
       </div>
     )
   }
