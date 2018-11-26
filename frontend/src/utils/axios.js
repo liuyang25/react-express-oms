@@ -4,7 +4,7 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 const service = axios.create({
     // baseURL: 'http://localhost:9999/api',
-    baseURL: 'http://172.24.248.176:9999/api',
+    baseURL: process.env.USE_MOCK ? '/mock' : process.env.BASE_API,
     timeout: 5000,
 }) 
 

@@ -159,22 +159,24 @@ class Main extends React.Component<Props> {
             <Icon type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'} />
           </div>
         </Sider>
-        <Layout>
-          <Header className="header">
-            <Proverbs />
-            <LoginInfo {...this.props} />
-          </Header>
-          <Content className="content">
-            {this.renderBreadcrumb()}
-            <Card>
-              {/*mainIndex()*/}
-              {this.props.loginStore.userName ? mainIndex() : jumpLogin()}
-            </Card>
-            <Footer style={{ textAlign: 'center' }} className="footer">
-              mail:liuyang25@126.com
-            </Footer>
-          </Content>
-        </Layout>
+        <div className="main-box">
+          <Layout className="main-layout">
+            <Header className="header">
+              <Proverbs />
+              <LoginInfo {...this.props} />
+            </Header>
+            <Content className="content">
+              {this.renderBreadcrumb()}
+              <Card>
+                {/*mainIndex()*/}
+                {this.props.loginStore.userName ? mainIndex() : jumpLogin()}
+              </Card>
+              <Footer style={{ textAlign: 'center' }} className="footer">
+                mail:liuyang25@126.com
+              </Footer>
+            </Content>
+          </Layout>
+        </div>
       </Layout>
     )
   }

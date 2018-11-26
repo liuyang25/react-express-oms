@@ -103,7 +103,7 @@ class Orders extends React.Component<Props> {
     })
     var reqParams = {
       cur_page: this.state.curPage,
-      ...this.searchParams
+      ...this.data.searchParams
     }
     axios.post(api.order.list, reqParams).then(res => {
       this.setState({
