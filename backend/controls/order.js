@@ -1,3 +1,4 @@
+
 let sql = require('../sql/sql');
 let moment = require('moment');
 let func = require('../sql/func');
@@ -18,188 +19,235 @@ function formatData(rows) {
 
 module.exports = {
 
+   //添加订单
+   async addOrder(req, res){
+		let {order_code,customer_id,customer_name,good_name,good_amount,good_num,good_weight,good_volume,good_volume_detail,
+			good_type,good_attr,customs_code,declared_value,receiving_time,receiving_name,receiving_address,
+			receiving_contact,receiving_comment,carriage,additional_fee,recieved_fee,concerted_pay_date,
+			reparations,logistics_company,logistics_orderid,logistics_cost,logistics_reparations,comment,
+			logistics_completed,order_closed} = req.body;
+		let user_name = req.session.login.user_name;
+		let newtime = dateFormat(new Date(time), 'YYYY-MM-DD hh:mm:ss');
+		if (!customer_id) {
+			res.send({code:100, msg:'客户代码不能为空'});
+			return;
+		}
+		if (!customer_name) {
+			res.send({code:100, msg:'客户名称不能为空'});
+			return;
+		}
+		if (!order_code) {
+			res.send({code:100, msg:'订单编号不能为空'});
+			return;
+		}
+
+		await func.connPool('select * from orders  where order_code = ?', order_code, (err, rows) => {
+			if (rows.length > 0) {
+			  res.send({code:100, msg:'订单编号不能重复'})
+			  return;
+			}
+
+		});
+
+
+		const sql = 'insert into customer(order_code,customer_id,customer_name,good_name,good_amount,good_num,good_weight,good_volume,good_volume_detail,'
+			        + 'good_type,good_attr,customs_code,declared_value,receiving_time,receiving_name,receiving_address,'
+			        + 'receiving_contact,receiving_comment,carriage,additional_fee,recieved_fee,concerted_pay_date,'
+			        + 'reparations,logistics_company,logistics_orderid,logistics_cost,logistics_reparations,comment,'
+		          	+ 'logistics_completed,order_closed,creator,updator,update_time)'
+					+ 'values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+		const arr = [order_code,customer_id,customer_name,good_name,good_amount,good_num,good_weight,good_volume,good_volume_detail,
+		            good_type,good_attr,customs_code,declared_value,receiving_time,receiving_name,receiving_address,
+		            receiving_contact,receiving_comment,carriage,additional_fee,recieved_fee,concerted_pay_date,
+		            reparations,logistics_company,logistics_orderid,logistics_cost,logistics_reparations,comment,
+					logistics_completed,order_closed,user_name,user_name,newtime];
+					
+		  func.connPool(sql, arr, (err, rows) => {
+			if (err) {
+			  res.send({code:100, msg:'内部错误'})
+			  return;
+			}
+			res.send({code:200, msg: 'ok'});
+		  })
+
+	},
+
+	  
+
 	// 获取订单列表
 
-	fetchAll(req, res) {
-		let cur_page = req.body.cur_page;
-		let state = req.body.state;
-		let member_name = req.body.member_name;
-		let sql, arr, endLimit, startLimit;
+	async listOrder(req, res) {
+		let {searchParam,selectLogisticsStatus,selectOrderStatus,orderDateStart,
+			orderDateEnd,cur_page }= req.body;
+		let endLimit = 10;
+		let startLimit = (cur_page-1) * 10;
+		let sql,arr;
+		let comment = '%' + req.body.searchParam + '%';
 
-		console.log(req.body.member_name);
+		sql = 'from orders where order_code like ? and customer_id like ? and customer_name like ? and good_name like ?'
+			  + 'and receiving_name like ? and receiving_address like ? and receiving_contact like ? and logistics_company like ?'
+			  + 'and logistics_orderid like ? and receiving_comment like ? ';
 
-
-		endLimit = cur_page * 10;
-		startLimit = endLimit - 10;
-
-
-
-		if (state && member_name) {
-
-			sql = 'select * from orders where state =?  and member_name =?';
-			arr = [state, member_name];
-
-
-		} else if (member_name) {
-
-
-			sql = 'select * from orders where member_name =? ';
-			arr = [member_name];
-
-
-		} else if (state) {
-
-			sql = 'select * from orders where state =? ';
-			arr = [state];
-
-
-		} else {
-
-			sql = 'select * from orders  limit ?, ?';
-			arr = [startLimit, endLimit];
+		arr = [comment,comment,comment,comment,comment,comment,comment,comment,comment,comment];
+		if(selectLogisticsStatus){
+			sql = sql + 'and logistics_completed = ?';
+			arr.push(selectLogisticsStatus);
 		}
-
-
-
-		func.connPool(sql, arr, (err, rows) => {
-			rows = formatData(rows);
-			res.json({
-				code: 200,
-				msg: 'ok',
-				resultList: rows
-			});
-
-		});
-
-	},
-
-
-
-
-
-
-	// 获取会员订单详情
-
-	fetchById(req, res) {
-		let member_id = req.body.member_id;
-
-		let sql = 'select * from orders WHERE member_id = ?';
-		let arr = [member_id];
-
-
-
-		func.connPool(sql, arr, (err, rows) => {
-
-			rows = formatData(rows);
-			res.json({
-				code: 200,
-				msg: 'ok',
-				resultList: rows
-			});
-		});
-
-
-	},
-
-
-
-
-
-
-	// 添加|更新 会员
-	addOne(req, res) {
-		let member_id = req.body.member_id;
-		console.log(member_id);
-
-		let member_name = req.body.member_name;
-		let member_phone = req.body.member_phone;
-
-		let remarks = req.body.remarks;
-		let recommendation_code = req.body.recommendation_code;
-
-		let membership_level = req.body.membership_level;
-		let member_address1 = req.body.member_address1;
-		let member_address2 = req.body.member_address2;
-		let member_address3 = req.body.member_address3;
-		let sql, arr;
-
-
-
-
-
-		if (member_id) {
-			// 更新
-
-			sql = 'UPDATE members SET member_name=?, member_phone=? ,remarks =? ,recommendation_code =? ,membership_level =? ,member_address1 =?,member_address2=?,member_address3 =?  WHERE member_id=?';
-
-
-			arr = [member_name, member_phone, remarks, recommendation_code, membership_level, member_address1, member_address2, member_address3, member_id];
-		} else {
-			// 新增
-			sql = 'INSERT INTO members(member_name, member_phone,remarks,recommendation_code,membership_level,member_address1,member_address2,member_address3) VALUES(?,?,?,?,?,?,?,?)';
-			arr = [member_name, member_phone, remarks, recommendation_code, membership_level, member_address1, member_address2, member_address3];
-
-
+		if(selectOrderStatus){
+			sql = sql + 'and order_closed = ?';
+			arr.push(selectOrderStatus);
 		}
+		if(orderDateStart){
+			sql = sql + 'and receiving_time >= ?';
+			arr.push(orderDateStart)
+		}
+		if(orderDateEnd){
+			sql = sql + 'and receiving_time < ?';
+			arr.push(orderDateEnd);
+		}
+	   
+		let sql_list = 'select * ' + sql + 'limit ?, ?';
+		let arr_list = arr;
+		arr_list.push(startLimit);
+		arr_list.push(endLimit);
 
+		let sql_count = 'select count(1) ' + sql;
 
-
-
-		func.connPool(sql, arr, (err, rows) => {
+		let total = await func.query(sql_count,arr);
+	
+		func.connPool(sql_list, arr_list, (err, rows) => {
 			res.json({
-				code: 200,
-				msg: 'done'
-			});
-
-		});
-
-
-	},
-
-
-	// 删除会员
-
-	deleteOne(req, res) {
-
-		let member_id = req.body.member_id;
-		let sql = 'DELETE  from members WHERE member_id =?';
-
-		let arr = [member_id];
-
-		func.connPool(sql, arr, (err, rows) => {
-			res.json({
-				code: 200,
-				msg: 'done'
-			});
+					code: 200,
+					msg: 'ok',
+			        list: rows,
+			        cur_page:cur_page,
+			        total:total[0].sum
+			 });
+			 
 		});
 
 	},
 
+	detailOrder(req, res) {
+		let order_code = req.body.order_code;
+		let sql,arr; 
+		sql = "select * from orders where order_code = ?";
+		arr = [order_code];
+		func.connPool(sql, arr, (err, rows) => {
+		  if(rows.length<1){
+			res.json({
+			  code: 100,
+			  msg: '数据不存在',
+			});
+			return;
+		  }
+			res.json({
+					code: 200,
+					msg: 'ok',
+					details: rows[0]
+				});
+
+	    });
+
+	},
+
+	updateOrder(req, res) {
+		let {order_code,customer_id,customer_name,good_name,good_amount,good_num,good_weight,good_volume,good_volume_detail,
+			good_type,good_attr,customs_code,declared_value,receiving_time,receiving_name,receiving_address,
+			receiving_contact,receiving_comment,carriage,additional_fee,recieved_fee,concerted_pay_date,
+			reparations,logistics_company,logistics_orderid,logistics_cost,logistics_reparations,comment,
+			logistics_completed,order_closed} = req.body;
+	
+		let newtime = dateFormat(new Date(time), 'YYYY-MM-DD hh:mm:ss');
+		let user_name = req.session.login.user_name;
+	
+		const sql = 'update customer set good_name=?,good_amount=?,good_num=?,good_weight=?,good_volume=?,good_volume_detail=?,'
+		+ 'good_type=?,good_attr=?,customs_code=?,declared_value=?,receiving_time=?,receiving_name=?,receiving_address=?,'
+		+ 'receiving_contact=?,receiving_comment=?,carriage=?,additional_fee=?,recieved_fee=?,concerted_pay_date=?,'
+		+ 'reparations=?,logistics_company=?,logistics_orderid=?,logistics_cost=?,logistics_reparations=?,comment=?,'
+		  + 'logistics_completed=?,order_closed=?,updator=?,update_time=? where order_code=?';
+
+        const arr = [good_name,good_amount,good_num,good_weight,good_volume,good_volume_detail,
+		good_type,good_attr,customs_code,declared_value,receiving_time,receiving_name,receiving_address,
+		receiving_contact,receiving_comment,carriage,additional_fee,recieved_fee,concerted_pay_date,
+		reparations,logistics_company,logistics_orderid,logistics_cost,logistics_reparations,comment,
+		logistics_completed,order_closed,user_name,newtime,order_code];
+	
+		func.connPool(sql, arr, (err, rows) => {
+		  if (err) {
+			res.send({code:100, msg:'内部错误'})
+			return;
+		  }
+		  res.send({code:200, msg: 'ok'});
+		})
+	  },
 
 
-
-
-	// 权限变更
-	changeRole(req, res) {
-		let change_role = req.body.change_role;
-
-		let member_id = req.body.member_id;
-
-
-
-
-		let sql = 'UPDATE members SET membership_level= ? WHERE member_id = ?';
-
-		let arr = [change_role, member_id];
-
+	deleteOrder(req,res){
+		let order_code = req.body.order_code;
+		let sql = 'delete from order where order_code = ?';
+		let arr = [order_code];
+		func.connPool(sql, arr, (err, rows) => {
+			if (err) {
+			  res.send({code:100, msg:'内部错误'})
+			  return;
+			}
+			res.send({code:200, msg: 'ok'});
+		  })
+	},
+   
+	getDictOrder(req,res){
+		let sql = 'select customer_id,compony_name from customer';
 		func.connPool(sql, arr, (err, rows) => {
 			res.json({
-				code: 200,
-				msg: 'done'
+			    code: 200,
+			    msg: 'ok',
+				list: rows
+			});
+  
+		});
+
+	},
+
+	getReceiptorList(req,res){
+		let primaeval_customer = req.body.primaeval_customer;
+		let sql = 'select CONCAT(principal,", ",compony_name) as name, address,contact,comment from customer_receipt where primaeval_customer = ?';
+		let arr = [primaeval_customer];
+		func.connPool(sql, arr, (err, rows) => {
+			res.json({
+			    code: 200,
+			    msg: 'ok',
+				list: rows
 			});
 		});
 
+	},
 
+	getLogisticsMsg(req,res){
+		let order_code = req.body.order_code;
+		let sql = 'select logistics_msg from orders where order_code = ?';
+		let arr = [order_code];
+		func.connPool(sql, arr, (err, rows) => {
+			res.json({
+			    code: 200,
+			    msg: 'ok',
+				list: rows
+			});
+		});
+	},
+
+	updateLogisticsMsg(req,res){
+		let logistics_msg = req.body.logistics_msg
+		let order_code = req.body.order_code;
+		let sql = 'update orders set logistics_msg = ? where order_code = ?';
+		let arr = [logistics_msg,order_code];
+		func.connPool(sql, arr, (err, rows) => {
+			if (err) {
+				res.send({code:100, msg:'内部错误'})
+				return;
+			  }
+			  res.send({code:200, msg: 'ok'});
+		});
 	},
 
 };

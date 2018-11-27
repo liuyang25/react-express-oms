@@ -1,5 +1,6 @@
 const mysql = require('mysql')
 const func = require('../sql/func')
+
 const { dateFormat } = require('../utils/common')
 
 module.exports = {

@@ -2,6 +2,7 @@ let express = require('express');
 
 let user = require('../controls/user');
 let customer = require('../controls/customer');
+let receiptor = require('../controls/receiptor');
 let logistics = require('../controls/logistics');
 let member =require('../controls/member');
 let goodstype = require('../controls/goodstype');
@@ -29,60 +30,33 @@ router.post(api.userLogin, user.login); // 登录
 router.post(api.userChangeRole, user.controlVisit, user.changeRole); // 更改权限
 
 //客户
-router.post(api.customerAdd, customer.addCustomer)
-router.post(api.customerList, customer.listCustomer)
+router.post(api.customerAdd, customer.addCustomer);
+router.post(api.customerList, customer.listCustomer);
+router.post(api.customerDetail, customer.detailCustomer);
+router.post(api.customerUpdate, customer.updateCustomer);
+
+//收货方
+router.post(api.customerAdd, receiptor.addReceiptor);
+router.post(api.customerList, receiptor.listReceiptor);
+router.post(api.customerDetail, receiptor.detailReceiptor);
+router.post(api.customerUpdate, receiptor.updateReceiptor);
+
 
 //物流 
-router.post(api.logisticsAdd, logistics.addLogistics)
-router.post(api.logisticsList, logistics.listLogistics)
-
-// members
-router.post(api.memberList, member.fetchAll);
-router.post(api.memberDetail, member.fetchById);
-router.post(api.memberAdd, member.addOne);
-router.post(api.memberDelete, member.deleteOne);
-router.post(api.memberDeleteMulti, member.deleteMulti);
-router.post(api.memberChangeRole,  member.changeRole); // 更改会员等级
+router.post(api.logisticsAdd, logistics.addLogistics);
+router.post(api.logisticsList, logistics.listLogistics);
 
 
-
-
-
-
-// goodstype
-router.post(api.goodstypeList, goodstype.fetchAll);
-router.post(api.goodstypeDetail, goodstype.fetchById);
-router.post(api.goodstypeAdd, goodstype.addOne);
-router.post(api.goodstypeDelete, goodstype.deleteOne);
-
-
-
-
-
-// goods
-router.post(api.goodsList, goods.fetchAll);
-router.post(api.goodsType, goods.fetchType);
-router.post(api.goodsDetail, goods.fetchById);
-router.post(api.goodsAdd, goods.addOne);
-router.post(api.goodsDelete, goods.deleteOne);
-router.post(api.goodsDeleteMulti, goods.deleteMulti);
-router.post(api.goodsUploadImg, upload.single('avatar'),goods.uploadGoodsImg); // 图片上传
-
-
-
-
-
-// goods
-router.post(api.orderList, order.fetchAll);
-
-router.post(api.orderDetail, order.fetchById);
-router.post(api.orderAdd, order.addOne);
-router.post(api.orderDelete, order.deleteOne);
-
-
-//test
-router.get('/api/test', order.test)
-
+// order
+router.post(api.orderAdd, order.addOrder);
+router.post(api.orderList, order.listOrder);
+router.post(api.orderDetail, order.detailOrder);
+router.post(api.orderUpdate, order.updateOrder);
+router.post(api.orderDelete, order.deleteOrder);
+router.post(api.orderGetDict, order.getDictOrder);
+router.post(api.orderGetReceiptorList, order.getReceiptorList);
+router.post(api.orderGetLogisticsMsg, order.getLogisticsMsg);
+router.post(api.orderUpdateLogisticsMsg, order.updateLogisticsMsg);
 
 
 

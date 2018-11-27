@@ -47,16 +47,27 @@ module.exports = {
 	
 	
 		
-	 // order
-   	orderList: path + '/order/list',
-	orderType:path + '/order/fetchType',	
-    orderDetail: path + '/order/detail',
-    orderDelete: path + '/order/delete',
+     // order
     orderAdd: path + '/order/add',
-    orderDeleteMulti: path + '/order/delete-multi',
+    orderList: path + '/order/list',
+    orderDetail: path + '/order/detail',
+	orderUpdate:path + '/order/Update',	
+    orderDelete: path + '/order/delete',
+    orderGetDict: path + '/order/getDict',
+    orderGetReceiptorList: path + '/order/getReceiptorList',
+    orderGetLogisticsMsg: path + '/order/getLogisticsMsg',
+    orderUpdateLogisticsMsg: path + '/order/updateLogisticsMsg',
 
     customerAdd: path + '/customer/add',
     customerList: path + '/customer/list',
+    customerDetail:path + '/customer/detail',
+    customerUpdate:path + '/customer/update',
+
+    receiptorAdd: path + '/receiptor/add',
+    receiptorList: path + '/receiptor/list',
+    receiptordetail: path + '/receiptor/detail',
+    receiptorupdate: path + '/receiptor/update',
+
 
     logisticsAdd: path + '/logistics/add',
     logisticsList: path + '/logistics/list',

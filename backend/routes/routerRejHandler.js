@@ -13,6 +13,7 @@ function ctrlRejHandler(ctrl) {
       }
     };
   }
+  
   return function (req, res, next) {
     return ctrl(req, res, next).catch(rej => {
       console.warn('错误处理装饰器 捕获错误', rej);
