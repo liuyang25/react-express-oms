@@ -36,10 +36,10 @@ router.post(api.customerDetail, customer.detailCustomer);
 router.post(api.customerUpdate, customer.updateCustomer);
 
 //收货方
-router.post(api.customerAdd, receiptor.addReceiptor);
-router.post(api.customerList, receiptor.listReceiptor);
-router.post(api.customerDetail, receiptor.detailReceiptor);
-router.post(api.customerUpdate, receiptor.updateReceiptor);
+router.post(api.receiptorAdd, receiptor.addReceiptor);
+router.post(api.receiptorList, receiptor.listReceiptor);
+router.post(api.receiptorDetail, receiptor.detailReceiptor);
+router.post(api.receiptorUpdate, receiptor.updateReceiptor);
 
 
 //物流 

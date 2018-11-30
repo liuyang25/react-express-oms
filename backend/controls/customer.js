@@ -1,12 +1,12 @@
-let mysql = require('mysql')
-let func = require('../sql/func')
-const { dateFormat } = require('../utils/common')
+let mysql = require('mysql');
+let func = require('../sql/func');
+const { dateFormat } = require('../utils/common');
 
 module.exports = {
-  addCustomer(req, res) {
+  async addCustomer(req, res) {
     let {
       customer_id,
-      compony_name,
+      componey_name,
       address,
       principal,
       contact,
@@ -14,23 +14,22 @@ module.exports = {
       comment
     } = req.body
    let user_name = req.session.login.user_name;
-   let newtime = dateFormat(new Date(time), 'YYYY-MM-DD hh:mm:ss');
+   let newtime = dateFormat(new Date(), 'YYYY-MM-DD hh:mm:ss');
 
     if (!customer_id) {
       res.send({code:100, msg:'客户代码不能为空'});
       return;
     }
 
-    func.connPool('select * from customer  where customer_id = ?', customer_id, (err, rows) => {
-      if (rows.length > 0) {
-        res.send({code:100, msg:'客户代码不能重复'})
-        return;
-      }
-    })
-
-    const sql = 'insert into customer(customer_id,compony_name,address,principal,contact,main_business,'
+    let result = await func.query('select count(customer_id) as sum from customer  where customer_id = ?', customer_id);
+    if(result[0].sum > 0 ){
+      res.send({code:100, msg:'客户代码不能重复'});
+      return;
+    }
+   
+    const sql = 'insert into customer(customer_id,componey_name,address,principal,contact,main_business,'
                 + 'comment,creator,updator,update_time) values(?,?,?,?,?,?,?,?,?,?)';
-    const arr = [customer_id,compony_name,address,principal,contact,main_business,comment,user_name,user_name,newtime]
+    const arr = [customer_id,componey_name,address,principal,contact,main_business,comment,user_name,user_name,newtime]
     func.connPool(sql, arr, (err, rows) => {
       if (err) {
         res.send({code:100, msg:'内部错误'})
@@ -44,14 +43,15 @@ module.exports = {
     let cur_page = req.body.cur_page || 1;
     let sql,arr,endLimit, startLimit,sum_sql,total_page,total,sum_arr;
     let comment = '%' + req.body.search_param + '%';
-
+    console.log(comment);
+    
 		endLimit = 10;
     startLimit = (cur_page-1) * 10;
-    sql = "select * from customer where customer_id like ? and compony_name like ? and address like ? "
-    +  "and principal like ? and contact like ? and main_business like ? and comment like ?  limit ?, ?";
+    sql = "select * from customer where customer_id like ? or componey_name like ? or address like ? "
+    +  "or principal like ? or contact like ? or main_business like ? or comment like ?  order by update_time DESC limit ?, ?";
 
-    sum_sql = "select count(customer_id) as sum from customer where customer_id like ? and compony_name like ? and address like ? "
-    +  "and principal like ? and contact like ? and main_business like ? and comment like ?";
+    sum_sql = "select count(customer_id) as sum from customer where customer_id like ? or componey_name like ? or address like ? "
+    +  "or principal like ? or contact like ? or main_business like ? or comment like ?";
 
     console.log(endLimit);
     console.log(startLimit);
@@ -77,7 +77,7 @@ module.exports = {
 updateCustomer(req, res) {
     let {
       customer_id,
-      compony_name,
+      componey_name,
       address,
       principal,
       contact,
@@ -85,11 +85,11 @@ updateCustomer(req, res) {
       comment
     } = req.body
 
-    let newtime = dateFormat(new Date(time), 'YYYY-MM-DD hh:mm:ss');
+    let newtime = dateFormat(new Date(), 'YYYY-MM-DD hh:mm:ss');
 
-    const sql = 'update customer set compony_name = ?,address = ?,principal = ?,contact = ?,main_business = ?'
+    const sql = 'update customer set componey_name = ?,address = ?,principal = ?,contact = ?,main_business = ?'
     + ',comment = ?,updator = ?,update_time = ? where customer_id =?';
-    const arr = [compony_name,address,principal,contact,main_business,comment,req.session.login.user_name,newtime,customer_id]
+    const arr = [componey_name,address,principal,contact,main_business,comment,req.session.login.user_name,newtime,customer_id]
     func.connPool(sql, arr, (err, rows) => {
       if (err) {
         res.send({code:100, msg:'内部错误'})

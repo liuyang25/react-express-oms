@@ -65,8 +65,8 @@ module.exports = {
 
     receiptorAdd: path + '/receiptor/add',
     receiptorList: path + '/receiptor/list',
-    receiptordetail: path + '/receiptor/detail',
-    receiptorupdate: path + '/receiptor/update',
+    receiptorDetail: path + '/receiptor/detail',
+    receiptorUpdate: path + '/receiptor/update',
 
 
     logisticsAdd: path + '/logistics/add',

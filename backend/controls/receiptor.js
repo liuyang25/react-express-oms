@@ -1,13 +1,13 @@
-let mysql = require('mysql')
-let func = require('../sql/func')
-const { dateFormat } = require('../utils/common')
+let mysql = require('mysql');
+let func = require('../sql/func');
+const { dateFormat } = require('../utils/common');
 
 module.exports = {
   addReceiptor(req, res) {
     let {
       primaeval_customer,
       customer_id,
-      compony_name,
+      componey_name,
       address,
       principal,
       contact,
@@ -15,9 +15,13 @@ module.exports = {
       comment
     } = req.body
     let date = req.body 
+
+    let newtime = dateFormat(new Date(), 'YYYY-MM-DD hh:mm:ss');
+    let user_name = req.session.login.user_name;
     
-    const sql = 'insert into customer_receipt(primaeval_customer,customer_id,compony_name,address,principal,contact,main_business,comment,creator) values(?,?,?,?,?,?,?,?,?)';
-    const arr = [primaeval_customer,customer_id,compony_name,address,principal,contact,main_business,comment,req.session.login.user_name]
+    const sql = 'insert into customer_receipt(primaeval_customer,customer_id,componey_name,address,principal,contact,main_business,comment'
+                + ',creator,updator,update_time) values(?,?,?,?,?,?,?,?,?,?,?)';
+    const arr = [primaeval_customer,customer_id,componey_name,address,principal,contact,main_business,comment,user_name,user_name,newtime]
     func.connPool(sql, arr, (err, rows) => {
       if (err) {
         res.send({code:100, msg:'内部错误'})
@@ -31,7 +35,7 @@ module.exports = {
     let primaeval_customer = req.body.primaeval_customer;
     let sql,arr;
 
-    sql = "select * from customer_receipt where primaeval_customer = ?";
+    sql = "select * from customer_receipt where primaeval_customer = ? order by update_time";
     arr = [primaeval_customer];
 		func.connPool(sql, arr, (err, rows) => {
 			res.json({
@@ -48,7 +52,7 @@ updateReceiptor(req, res) {
       id,
       primaeval_customer,
       customer_id,
-      compony_name,
+      componey_name,
       address,
       principal,
       contact,
@@ -56,11 +60,11 @@ updateReceiptor(req, res) {
       comment
     } = req.body
 
-    let newtime = dateFormat(new Date(time), 'YYYY-MM-DD hh:mm:ss');
+    let newtime = dateFormat(new Date(), 'YYYY-MM-DD hh:mm:ss');
 
-    const sql = 'update customer_receipt set customer_id = ?,compony_name = ?,address = ?,principal = ?,contact = ?,main_business = ?'
+    const sql = 'update customer_receipt set customer_id = ?,componey_name = ?,address = ?,principal = ?,contact = ?,main_business = ?'
     + ',comment = ?,updator = ?,update_time = ? where id = ?';
-    const arr = [customer_id,compony_name,address,principal,contact,main_business,comment,req.session.login.user_name,newtime,id]
+    const arr = [customer_id,componey_name,address,principal,contact,main_business,comment,req.session.login.user_name,newtime,id]
     func.connPool(sql, arr, (err, rows) => {
       if (err) {
         res.send({code:100, msg:'内部错误'})

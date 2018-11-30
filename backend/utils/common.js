@@ -1,5 +1,5 @@
 function dateFormat(date, fmt) {
-  if (null == date || undefined == date) return '';
+  if (null == date || undefined == date || date == 'Invalid Date') return null;
   var o = {
       "M+": date.getMonth() + 1, //月份
       "D+": date.getDate(), //日
