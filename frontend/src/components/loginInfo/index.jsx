@@ -2,6 +2,8 @@ import React from 'react';
 import { LoginStore } from '@/stores/loginStore';
 import { observer } from 'mobx-react';
 import { Menu, Dropdown, Button } from 'antd';
+import Axios from 'axios';
+import api from '@/api'
 
 export interface Props {
   loginStore: LoginStore;
@@ -17,6 +19,7 @@ class LoginInfo extends React.Component<Props> {
           <span 
             onClick={() => {
               this.props.loginStore.userName = '';
+              Axios.post(api.user.logout);
             }}
           >退出
           </span>

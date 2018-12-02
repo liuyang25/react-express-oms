@@ -26,7 +26,7 @@ class Login extends React.Component<Props> {
       }
       axios.post(api.user.login, values).then(res => {
         if (res.data.code === 200) {
-          this.props.loginStore.userName = values.userName
+          this.props.loginStore.userName = res.data.name || '无名'
           this.props.history.push('/')
         } else {
           alert('登录失败')

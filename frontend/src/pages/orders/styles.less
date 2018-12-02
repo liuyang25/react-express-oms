@@ -7,17 +7,25 @@
       margin-right: 20px;
     }
   }
-  .table {
+  .orders-table {
     th {
       min-width: 100px;
     }
     td {
-      text-overflow: ellipsis;
-      overflow: hidden;
+      // text-overflow: ellipsis;
+      // overflow: hidden;
       line-height: 1;
       padding: 8px;
-      white-space: nowrap;
+      // white-space: nowrap;
     }
+  }
+  .table-column {
+    white-space: unset;
+    word-break: break-all;
+    max-width: 400px;
+  }
+  .min-width {
+    min-width: 120px;
   }
   .operators {
     button {
@@ -26,5 +34,28 @@
   }
 }
 .order-detail {
-
+  .order-detail-content {
+    display: table;
+  }
+  .order-detail-footer {
+    height: 35px;
+    button {
+      float: right
+    }
+  }
+  button {
+    margin-left: 5px;
+  }
+  .ant-input-disabled {
+    color: rgba(0,0,0,0.7);
+  }
+}
+.order-add {
+  padding: 5px 20px;
+  .form-footer {
+    button {
+      float: right;
+      margin-left: 3px;
+    }
+  }
 }

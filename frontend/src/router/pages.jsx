@@ -6,9 +6,6 @@ import Users from '@/pages/users'
 import Page404 from '@/pages/404'
 import OrderList from '@/pages/orders'
 import Customers from '@/pages/customers'
-import CustomerAdd from '@/pages/customer_add'
-import Logistics from '@/pages/logistics'
-import LogisticsAdd from '@/pages/logistics_add'
 
 export const mainPages: Page[] = [
   {
@@ -27,47 +24,13 @@ export const mainPages: Page[] = [
     name: '客户',
     icon: 'smile',
     path: '/customer',
-    pages: [
-      {
-        component: Customers,
-        name: '客户列表',
-        path: '/customer/list'
-      },
-      {
-        component: CustomerAdd,
-        name: '客户新增',
-        path: '/customer/add'
-      }
-    ]
+    component: Customers,
   },
   {
     name: '订单',
     icon: 'file-text',
     path: '/order',
-    pages: [
-      {
-        component: OrderList,
-        name: '订单列表',
-        path: '/order/list'
-      }
-    ]
-  },
-  {
-    name: '物流',
-    icon: 'car',
-    path: '/logistics',
-    pages: [
-      {
-        component: Logistics,
-        name: '物流列表',
-        path: '/logistics/list'
-      },
-      {
-        component: LogisticsAdd,
-        name: '物流新增',
-        path: '/logistics/add'
-      }
-    ]
+    component: OrderList,
   },
   /*{
     name: 'submenuDemo',

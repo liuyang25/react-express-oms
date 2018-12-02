@@ -2,30 +2,32 @@ import * as React from 'react'
 import axios from '@/utils/axios'
 import api from '@/api'
 import { Table, Button, Form, Input, Pagination, Modal } from 'antd'
-import CustomerAdd from './add'
-import CustomerEdit from './edit'
+import RecevierAdd from './add'
+import RecevierEdit from './edit'
 import './styles.less'
-import Receviers from './receivers';
 
+interface Props {
+  id: String
+}
 @Form.create()
-class Customers extends React.Component<Props> {
+class Receviers extends React.Component<Props> {
   constructor(props) {
     super(props)
     this.state = {
       loading: false,
       modalAdd: false,
       modalEdit: false,
-      modalReceivers: false,
       searchParam: '',
       curPage: 1,
       total: 0,
-      currentEditData: {}
+      currentEditData: {},
+      currentEditIndex: 0,
     }
     this.tableColumns = [
-      { key: 'no', title: '序号', render:(data, context, index) => {
-        return (this.state.curPage-1)*10 + index+1
-      }},
-      { dataIndex: 'customer_id', title: '客户代码' },
+      { key: 'no', title: '序号', width: 80,
+        render: (text, record, index)=> (this.state.curPage - 1) * 10 + index + 1 
+      },
+      { dataIndex: 'customer_id', title: '收货方代码' },
       { dataIndex: 'componey_name', title: '公司名称' },
       { dataIndex: 'address', title: '地址' },
       { dataIndex: 'principal', title: '负责人' },
@@ -35,30 +37,27 @@ class Customers extends React.Component<Props> {
       {
         key: 'operate',
         title: '操作',
+        width: 100,
         render: (text, record, index) => {
           return (
             <span>
-              <Button onClick={() => this.handleCheckReceview(record.customer_id)}>
-                查看收货方
-              </Button>
-              <Button onClick={() => this.handleEditButton(record)}>
-                编辑
-              </Button>
+              <Button onClick={() => this.handleEditButton(record)}>编辑</Button>
             </span>
           )
         }
       }
     ]
   }
-  fetchData() {
+  fetchData(id) {
     this.setState({
       loading: true
     })
     var reqParams = {
       search_param: this.state.searchParam,
-      cur_page: this.state.curPage
+      cur_page: this.state.curPage,
+      primaeval_customer: id|| this.props.id
     }
-    axios.post(api.customer.list, reqParams).then(res => {
+    axios.post(api.receiptor.list, reqParams).then(res => {
       if (res.data && res.data.code == 200) {
         this.setState({
           tableData: res.data.list,
@@ -67,12 +66,6 @@ class Customers extends React.Component<Props> {
           total: res.data.total
         })
       }
-    })
-  }
-  handleCheckReceview(id) {
-    this.setState({
-      modalReceivers: true,
-      customer_id: id
     })
   }
   handleAddOnSuccess() {
@@ -89,7 +82,8 @@ class Customers extends React.Component<Props> {
   handleEditButton(record) {
     this.setState({
       modalEdit: true,
-      currentEditData: record
+      currentEditData: record,
+      currentEditIndex: record.id
     })
   }
   handleEditSuccsess() {
@@ -115,13 +109,19 @@ class Customers extends React.Component<Props> {
     })
     this.fetchData()
   }
-  componentDidMount() {
+
+  componentWillReceiveProps(newProps) {
+    if (this.props.id !== newProps.id) {
+      this.fetchData(newProps.id)
+    }
+  }
+  componentDidMount(){
     this.fetchData()
   }
-  componentWillReceiveProps(props) {}
+  
   render() {
     return (
-      <div className="customers">
+      <div className="receivers">
         <div className="search">
           <Input.Search
             placeholder="输入需要搜索的关键字"
@@ -143,7 +143,7 @@ class Customers extends React.Component<Props> {
         </div>
         <Table
           loading={this.state.loading}
-          className="customers-table"
+          className="receivers-table"
           columns={this.tableColumns}
           dataSource={this.state.tableData}
           rowKey="customer_id"
@@ -153,50 +153,40 @@ class Customers extends React.Component<Props> {
           style={{ textAlign: 'right' }}
           onChange={this.handleChangePage}
           total={this.state.total}
-          showTotal={(total, range) =>
-            `${range[0]}-${range[1]} of ${total} items`
-          }
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
           current={this.state.curPage}
         />
         <Modal
           visible={this.state.modalAdd}
           width={800}
           footer={null}
-          title="客户新增"
+          title="收货方新增"
           maskClosable={false}
           onCancel={this.handleAddOnCancel.bind(this)}
         >
-          <CustomerAdd
+          <RecevierAdd
             onSuccess={this.handleAddOnSuccess.bind(this)}
             onCancel={this.handleAddOnCancel.bind(this)}
+            id={this.props.id}
           />
         </Modal>
         <Modal
           visible={this.state.modalEdit}
           width={800}
           footer={null}
-          title="客户信息编辑"
+          title="收货方信息编辑"
           onCancel={this.handleEditOnCancel.bind(this)}
         >
-          <CustomerEdit
-            // wrappedComponentRef={form => (this.editForm = form)}
+          <RecevierEdit
+            wrappedComponentRef={(form) => this.editForm = form}
             data={this.state.currentEditData}
             onSuccess={this.handleEditSuccsess.bind(this)}
             onCancel={this.handleEditOnCancel.bind(this)}
+            ids={{ primaeval_customer: this.props.id, id: this.state.currentEditIndex }}
           />
-        </Modal>
-        <Modal
-          visible={this.state.modalReceivers}
-          width={1100}
-          footer={null}
-          title="收货方列表"
-          maskClosable={false}
-          onCancel={()=>this.setState({modalReceivers: false})}
-        >
-          <Receviers id={this.state.customer_id}/>
         </Modal>
       </div>
     )
   }
 }
-export default Customers
+export default Receviers

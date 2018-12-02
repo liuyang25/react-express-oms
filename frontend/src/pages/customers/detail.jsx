@@ -1,3 +1,4 @@
+/* 暂时废弃，没有详情页 */
 import * as React from 'react'
 import { Form, Input, Button, message } from 'antd'
 import axios from '@/utils/axios'
@@ -6,10 +7,19 @@ import api from '@/api'
 const FormItem = Form.Item
 
 @Form.create()
-class CustomerNew extends React.Component<Props> {
+class CustomerDetail extends React.Component<Props> {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      editing: false,
+      detailData: {},
+    }
+  }
+  fetchData(){
+    const customerCode = this.props.location.query.customerCode;
+    axios.post(api.customer.detail, customerCode).then(res => {
+
+    })
   }
   handleSubmit = e => {
     e.preventDefault()
@@ -27,6 +37,7 @@ class CustomerNew extends React.Component<Props> {
       })
     })
   }
+
   renderFormItem() {
     const { getFieldDecorator } = this.props.form
     const formList = [
@@ -48,14 +59,18 @@ class CustomerNew extends React.Component<Props> {
           label={item.label}
           key={item.key}
         >
-          {getFieldDecorator(item.key, { rules: item.rules })(<Input />)}
+          {this.state.editing ? getFieldDecorator(item.key, {rules: item.rules })(<Input />):
+            <span>{this.state.detailData[item.key]}</span>
+          }
         </FormItem>
       )
     })
     return res
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    this.fetchData()
+  }
   render() {
     // const { autoCompleteResult } = this.state
 
@@ -71,4 +86,4 @@ class CustomerNew extends React.Component<Props> {
     )
   }
 }
-export default CustomerNew
+export default CustomerDetail

@@ -1,78 +1,306 @@
 import * as React from 'react'
-import { Row, Col } from 'antd';
+import {
+  Col,
+  Input,
+  InputNumber,
+  Select,
+  DatePicker,
+  Button,
+  Form,
+  message
+} from 'antd'
+import axios from '@/utils/axios'
+import api from '@/api'
+import moment from 'moment'
 import './styles.less'
 
+const FormItem = Form.Item
+const Option = Select.Option
 interface Props {
-  data: {} 
+  id: '';
 }
-class OrderDetail extends React.PureComponent<Props> {
+export class OrderDetail extends React.PureComponent<Props> {
   constructor(props) {
     super(props)
-    this.state = {}
-    this.displayRows = [
-      { dataIndex: 'order_code', title: '货物编号'},
-      { dataIndex: 'good_name', title: '货物名称' },
-      { dataIndex: 'custtttomer_id', title: '客户代码' },
-      { dataIndex: 'good_num', title: '数量' },
-      { dataIndex: 'good_weight', title: '重量' },
-      { dataIndex: 'good_volume', title: '体积' },
-      { dataIndex: 'good_volume_detail', title: '尺寸详情' },
-      { dataIndex: 'good_type', title: '商品型号' },
-      { dataIndex: 'good_attr', title: '商品属性' },
-      { dataIndex: 'customs_code', title: '海关代码' },
-      { dataIndex: 'declared_value', title: '申报价值' },
-      { dataIndex: 'receiving_time', title: '收货日期  ' },
-      { dataIndex: 'receiving_name', title: '收货方名称' },
-      { dataIndex: 'receiving_address', title: '收货方地址' },
-      { dataIndex: 'receiving_company', title: '收货方公司' },
-      { dataIndex: 'receiving_comment', title: '收货方备注信息' },
-      { dataIndex: 'carriage', title: '运费' },
-      { dataIndex: 'additional_fee', title: '附加费' },
-      { dataIndex: 'recieved_fee', title: '已收费用' },
-      { dataIndex: 'concerted_pay_date', title: '协议付款日期' },
-      { dataIndex: 'reparations', title: '赔款' },
-      { dataIndex: 'logistics_company', title: '物流公司' },
-      { dataIndex: 'logistics_orderid', title: '物流单号' },
-      { dataIndex: 'logistics_cost', title: '物流成本' },
-      { dataIndex: 'logistics_reparations', title: '物流赔款' },
-      { dataIndex: 'comment', title: '备注' },
-      { dataIndex: 'logistics_completed', title: '物流是否完结' },
-      { dataIndex: 'order_closed', title: '订单是否关闭' },
-      { dataIndex: 'creator', title: '创建人' },
-      { dataIndex: 'create_time', title: '创建时间' },
-      { dataIndex: 'update_time', title: '更新时间' }
-    ]
-  }
-  componentDidMount() {}
-  render() {
-    const rows = [];
-    const l = this.displayRows.length
-    for (let i = 0; i < Math.floor(this.displayRows.length / 3); i++){
-      const i3 = 3 * i
-      rows.push(<Row type="flex" justify="center" key={i}>
-          <Col span={2}>{this.displayRows[i3].title}</Col>
-          <Col span={4}>
-            {this.props.data[this.displayRows[i3].dataIndex]}
-          </Col>
-          {i3 + 1 < l && <Col span={2}>
-              {this.displayRows[i3 + 1].title}
-            </Col>}
-          {i3 + 1 < l && <Col span={4}>
-              {this.props.data[this.displayRows[i3 + 1].dataIndex]}
-            </Col>}
-          {i3 + 2 < l && <Col span={2}>
-              {this.displayRows[3 * i + 2].title}
-            </Col>}
-          {i3 + 2 < l && <Col span={4}>
-              {this.props.data[this.displayRows[i3 + 2].dataIndex]}
-            </Col>}
-        </Row>)
+    this.state = {
+      loading: false,
+      editing: false,
+      customerOptions: [],
+      receiptorOptions: [],
+      orderStatusOptions: [
+        [{ value: '1', label: '是' }, { value: '0', label: '否' }]
+      ],
+      logisticsStatusOptions: [
+        [{ value: '1', label: '是' }, { value: '0', label: '否' }]
+      ],
+      detailData: {}
     }
+  }
+  handleOptionChange(v, option) {
+    this.props.form.setFieldsValue({
+      ...option.props.data
+    })
+  }
+  displayRows = [
+    { key: 'order_code', label: '货物编号（唯一）' },
+    {
+      key: 'receiving_name',
+      label: '收货方名称',
+      type: 2,
+      onChange: this.handleOptionChange.bind(this),
+      options: 'receiptorOptions',
+      params: {
+        showSearch:true,
+        filterOption: true,
+      }
+    },
+    {
+      key: 'customer_name',
+      label: '客户名称',
+      type: 2,
+      rules: [{ required: true, message: '请选择客户' }],
+      onChange: this.handleOptionChange.bind(this),
+      options: 'customerOptions'
+    },
+    {
+      key: 'receiving_address',
+      label: '收货方地址',
+    },
+    {
+      key: 'customer_id',
+      label: '客户代码',
+      type: 2,
+      rules: [{ required: true, message: '请选择客户' }],
+      onChange: this.handleOptionChange.bind(this),
+      options: 'customerOptions'
+    },
+    {
+      key: 'receiving_contact',
+      label: '收货方联系方式',
+    },
+    { key: 'good_name', label: '货物名称' },
+    {
+      key: 'receiving_comment',
+      label: '收货方备注信息',
+    },
+    { key: 'good_amount', label: '数量' },
+    { key: 'carriage', label: '运费(元)' },
+    { key: 'good_num', label: '件数', type: 1 },
+    { key: 'additional_fee', label: '附加费(元)', type: 1 },
+    { key: 'good_weight', label: '重量(kg)', type: 1 },
+    { key: 'recieved_fee', label: '已收费用(元)', type: 1 },
+    { key: 'good_volume', label: '体积' },
+    { key: 'concerted_pay_date', label: '协议付款日期', type: 3 },
+    { key: 'good_volume_detail', label: '尺寸' },
+    { key: 'reparations', label: '赔款(元)', type: 1 },
+    { key: 'good_type', label: '商品型号' },
+    { key: 'logistics_company', label: '物流公司' },
+    { key: 'good_attr', label: '商品属性' },
+    { key: 'logistics_orderid', label: '物流单号' },
+    { key: 'customs_code', label: '海关编码' },
+    { key: 'logistics_cost', label: '物流成本' },
+    { key: 'declared_value', label: '申报价值' },
+    { key: 'logistics_reparations', label: '物流赔款(元)', type: 1 },
+    { key: 'receiving_time', label: '下单时间', type: 3 },
+    { key: 'comment', label: '备注' },
+    {
+      key: 'order_closed',
+      label: '订单是否关闭',
+      type: 2,
+      options: 'orderStatusOptions'
+    },
+    {
+      key: 'logistics_completed',
+      label: '物流是否完结',
+      type: 2,
+      options: 'logisticsStatusOptions'
+    }
+  ]
+  handleCancel() {
+    this.setState({
+      editing: false
+    })
+  }
+  handleEdit() {
+    this.setState({
+      editing: true
+    })
+  }
+  handleConfirm() {
+    if (this.state.editing) {
+      this.props.form.validateFieldsAndScroll((err, values) => {
+        if (err) {
+          console.error(err)
+          return
+        }
+        axios.post(api.order.update, values).then(res => {
+          if (res.data.code === 200) {
+            this.props.form.resetFields()
+            message.info('创建成功')
+            this.props.onClose(true)
+          } else {
+            message.error(res.data.msg)
+          }
+        })
+      })
+    } else {
+      this.props.onClose()
+    }
+  }
+  fetchOptions() {
+    // 客户信息
+    axios.post(api.order.options).then(res => {
+      if (res.data && res.data.code === 200) {
+        const customerOptions = []
+        res.data.list.forEach(item => {
+          customerOptions.push({
+            customer_id: item.customer_id,
+            customer_name: item.componey_name
+          })
+        })
+        this.setState({
+          customerOptions
+        })
+      }
+    })
+    // 收货方信息
+    axios.post(api.receiptor.list).then(res => {
+      if (res.data && res.data.code === 200) {
+        const receiptorOptions = []
+        res.data.list.forEach(item => {
+          receiptorOptions.push({
+            receiving_name: item.compony_name,
+            receiving_address: item.address,
+            receiving_contact: item.contact,
+            receiving_comment: item.comment
+          })
+        })
+        this.setState({
+          receiptorOptions
+        })
+      }
+    })
+  }
+  fetchData(id) {
+    this.setState({
+      loading: true,
+      editing: false
+    })
+    this.fetchOptions()
+    axios
+      .post(api.order.detail, { order_code: id || this.props.id })
+      .then(res => {
+        if (res.data && res.data.code === 200) {
+          this.setState({
+            loading: false
+          })
+          const fields = {}
+          this.displayRows.forEach(item => {
+            let v = res.data.details[item.key]
+            if (item.type === 3) {
+              v = moment(v)
+            }
+            fields[item.key] = v
+          })
+          this.setState({
+            detailData: fields
+          })
+        }
+      })
+  }
+  componentWillReceiveProps(newProps) {
+    if (this.props.id !== newProps.id) {
+      this.fetchData(newProps.id)
+    }
+  }
+  componentDidUpdate(preProps, preState) {
+    if (!preState.editing && this.state.editing) {
+      this.props.form.setFieldsValue(this.state.detailData)
+    }
+  }
+  componentDidMount() {
+    this.fetchData()
+  }
+  renderInput(conf) {
+    switch (conf.type) {
+      case 1:
+        return <InputNumber disabled={conf.disabled} />
+      case 2:
+        const options = this.state[conf.options]
+        return (
+          <Select disabled={conf.disabled} onChange={conf.onChange}
+          {...conf.params}>
+            {options.map((option, index) => {
+              return (
+                <Option key={index} data={option} value={option[conf.key]}>
+                  {option[conf.key]}
+                </Option>
+              )
+            })}
+          </Select>
+        )
+      case 3:
+        return <DatePicker disabled={conf.disabled} />
+      default:
+        return <Input disabled={conf.disabled} />
+    }
+  }
+  renderDetailItem(conf) {
+    const v = this.state.detailData[conf.key]
+    switch (conf.type) {
+      case 2:
+        return v
+      case 3:
+        return moment(v).format('YYYY-MM-DD')
+      default:
+        return v
+    }
+  }
+  renderFooter() {
+    return this.state.editing ? (
+      <div className="order-detail-footer">
+        <Button type="primary" onClick={() => this.handleConfirm()}>
+          提交
+        </Button>
+        <Button onClick={() => this.handleCancel()}>取消</Button>
+      </div>
+    ) : (
+      <div className="order-detail-footer">
+        <Button type="primary" onClick={() => this.handleConfirm()}>
+          关闭
+        </Button>
+        <Button onClick={() => this.handleEdit()}>编辑</Button>
+      </div>
+    )
+  }
+  render() {
+    const { getFieldDecorator } = this.props.form
     return (
       <div className="order-detail">
-        {rows}
+        <Form className="order-detail-content">
+          {this.displayRows.map((item, index) => {
+            return (
+              <Col span={12} key={index}>
+                <FormItem
+                  labelCol={{ offset: 1, span: 6 }}
+                  wrapperCol={{ span: 11 }}
+                  label={item.label}
+                  key={item.key}
+                >
+                  {' '}
+                  {this.state.editing
+                    ? getFieldDecorator(item.key, { rules: item.rules })(
+                        this.renderInput(item)
+                      )
+                    : this.renderDetailItem(item)}
+                </FormItem>
+              </Col>
+            )
+          })}
+        </Form>
+        {this.renderFooter()}
       </div>
     )
   }
 }
-export default OrderDetail
+export default Form.create()(OrderDetail)

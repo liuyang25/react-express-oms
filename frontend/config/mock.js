@@ -48,6 +48,10 @@ function isExist(filename) {
 }
 
 module.exports = function(app) {
+  var bodyParser = require('body-parser');
+  app.use(bodyParser.json()); // for parsing application/json
+  app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+
   app.all('/mock/*', function(req, res) {
     var filename = req.path.substring(0, req.path.lastIndexOf('.'))||req.path;
     var dirName = __dirname + '/../mock/';
@@ -60,7 +64,7 @@ module.exports = function(app) {
       // res.sendFile(dirName + filename + '.json');
       // return;
     } else if (isExist(dirName + filename + '.js')) {
-      result = require(dirName + filename + '.js')();
+      result = require(dirName + filename + '.js')(req, res);
     } else {
       result = {
         respCode: 0,
