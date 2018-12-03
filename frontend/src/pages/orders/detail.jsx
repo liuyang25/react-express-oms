@@ -46,7 +46,7 @@ export class OrderDetail extends React.PureComponent<Props> {
     {
       key: 'receiving_name',
       label: '收货方名称',
-      type: 2,
+      type: 'select',
       onChange: this.handleOptionChange.bind(this),
       options: 'receiptorOptions',
       params: {
@@ -57,7 +57,7 @@ export class OrderDetail extends React.PureComponent<Props> {
     {
       key: 'customer_name',
       label: '客户名称',
-      type: 2,
+      type: 'select',
       rules: [{ required: true, message: '请选择客户' }],
       onChange: this.handleOptionChange.bind(this),
       options: 'customerOptions'
@@ -69,7 +69,7 @@ export class OrderDetail extends React.PureComponent<Props> {
     {
       key: 'customer_id',
       label: '客户代码',
-      type: 2,
+      type: 'select',
       rules: [{ required: true, message: '请选择客户' }],
       onChange: this.handleOptionChange.bind(this),
       options: 'customerOptions'
@@ -85,14 +85,14 @@ export class OrderDetail extends React.PureComponent<Props> {
     },
     { key: 'good_amount', label: '数量' },
     { key: 'carriage', label: '运费(元)' },
-    { key: 'good_num', label: '件数', type: 1 },
-    { key: 'additional_fee', label: '附加费(元)', type: 1 },
-    { key: 'good_weight', label: '重量(kg)', type: 1 },
-    { key: 'recieved_fee', label: '已收费用(元)', type: 1 },
+    { key: 'good_num', label: '件数', type: 'number' },
+    { key: 'additional_fee', label: '附加费(元)', type: 'number' },
+    { key: 'good_weight', label: '重量(kg)', type: 'number' },
+    { key: 'recieved_fee', label: '已收费用(元)', type: 'number' },
     { key: 'good_volume', label: '体积' },
-    { key: 'concerted_pay_date', label: '协议付款日期', type: 3 },
+    { key: 'concerted_pay_date', label: '协议付款日期', type: 'date' },
     { key: 'good_volume_detail', label: '尺寸' },
-    { key: 'reparations', label: '赔款(元)', type: 1 },
+    { key: 'reparations', label: '赔款(元)', type: 'number' },
     { key: 'good_type', label: '商品型号' },
     { key: 'logistics_company', label: '物流公司' },
     { key: 'good_attr', label: '商品属性' },
@@ -100,19 +100,19 @@ export class OrderDetail extends React.PureComponent<Props> {
     { key: 'customs_code', label: '海关编码' },
     { key: 'logistics_cost', label: '物流成本' },
     { key: 'declared_value', label: '申报价值' },
-    { key: 'logistics_reparations', label: '物流赔款(元)', type: 1 },
-    { key: 'receiving_time', label: '下单时间', type: 3 },
+    { key: 'logistics_reparations', label: '物流赔款(元)', type: 'number' },
+    { key: 'receiving_time', label: '下单时间', type: 'date' },
     { key: 'comment', label: '备注' },
     {
       key: 'order_closed',
       label: '订单是否关闭',
-      type: 2,
+      type: 'select',
       options: 'orderStatusOptions'
     },
     {
       key: 'logistics_completed',
       label: '物流是否完结',
-      type: 2,
+      type: 'select',
       options: 'logisticsStatusOptions'
     }
   ]
@@ -223,9 +223,9 @@ export class OrderDetail extends React.PureComponent<Props> {
   }
   renderInput(conf) {
     switch (conf.type) {
-      case 1:
+      case 'number':
         return <InputNumber disabled={conf.disabled} />
-      case 2:
+      case 'select':
         const options = this.state[conf.options]
         return (
           <Select disabled={conf.disabled} onChange={conf.onChange}
@@ -239,7 +239,7 @@ export class OrderDetail extends React.PureComponent<Props> {
             })}
           </Select>
         )
-      case 3:
+      case 'date':
         return <DatePicker disabled={conf.disabled} />
       default:
         return <Input disabled={conf.disabled} />
@@ -248,9 +248,9 @@ export class OrderDetail extends React.PureComponent<Props> {
   renderDetailItem(conf) {
     const v = this.state.detailData[conf.key]
     switch (conf.type) {
-      case 2:
+      case 'select':
         return v
-      case 3:
+      case 'date':
         return moment(v).format('YYYY-MM-DD')
       default:
         return v

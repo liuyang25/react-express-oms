@@ -1,0 +1,9 @@
+{"code":200,"msg":"ok",
+  "resultList": [
+    {
+      "time": "1970-01-01",
+      "information": "hehe",
+      "information_en": "hehe"
+    }
+  ]
+}

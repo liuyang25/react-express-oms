@@ -12,6 +12,7 @@ import {
 } from 'antd'
 import OrderDetail from './detail'
 import OrderAdd from './add'
+import Logistics from '@/pages/logistics'
 import { dateFormat } from '@/utils/common'
 import './styles.less'
 
@@ -26,6 +27,8 @@ class Orders extends React.Component<Props> {
       total: 0,
       modalDetail: false,
       modalAdd: false,
+      modalLogistics: false,
+      logisticsId: '',
       detailId: ''
     }
     this.data = {
@@ -65,7 +68,10 @@ class Orders extends React.Component<Props> {
     ]
     /*货物编号 客户代码 客户名称 货物名称 运费 附加费 已收费用 物流成本 物流公司 下单日期 物流状态 订单状态*/
     this.tableColumns = [
-      { key: 'id', title: '序号', fixed: 'left',
+      {
+        key: 'id',
+        title: '序号',
+        fixed: 'left',
         render: (data, context, index) => {
           return (this.state.curPage - 1) * 10 + index + 1
         }
@@ -83,24 +89,26 @@ class Orders extends React.Component<Props> {
         key: 'receiving_time',
         title: '下单日期',
         className: 'minWidth',
-        render: data => data ? dateFormat(new Date(data.receiving_time), 'yyyy-MM-dd') : ''
-        
+        render: data =>
+          data ? dateFormat(new Date(data.receiving_time), 'yyyy-MM-dd') : ''
       },
       {
         key: 'logistics_completed',
         title: '物流状态',
-        render: data => data ? ['途中', '已完成'][data.logistics_completed] || '' : ''
+        render: data =>
+          data ? ['途中', '已完成'][data.logistics_completed] || '' : ''
       },
       {
         // dataIndex: 'order_closed',
         key: 'order_closed',
         title: '订单状态',
-        render: data => data ? ['进行中', '已结束'][data.order_closed] || '' : ''
+        render: data =>
+          data ? ['进行中', '已结束'][data.order_closed] || '' : ''
       },
       {
         key: 'operator',
         title: '操作',
-        className: 'minWidth',
+        className: 'min-width',
         render: data => {
           return (
             <span className="operators">
@@ -112,14 +120,14 @@ class Orders extends React.Component<Props> {
                 title="订单详情"
               />
               <Button
-                onClick={() => this.handleLogisticsButton()}
+                onClick={() => this.handleLogisticsButton(data)}
                 type="primary"
                 shape="circle"
                 icon="car"
                 title="物流信息"
               />
               <Button
-                onClick={() => this.handleDeleteButton()}
+                onClick={() => this.handleDeleteButton(data)}
                 type="primary"
                 shape="circle"
                 icon="delete"
@@ -195,8 +203,32 @@ class Orders extends React.Component<Props> {
       modalAdd: false
     })
   }
-  handleLogisticsButton() {}
-  handleDeleteButton() {}
+  handleLogisticsButton(data) {
+    this.setState({
+      modalLogistics: true,
+      logisticsId: data.order_code
+    })
+  }
+  handleLogisticsOnClose() {
+    this.setState({
+      modalLogistics: false
+    })
+  }
+  handleDeleteButton(data) {
+    Modal.confirm({
+      title: '确认删除？',
+      onOk: () => {
+        const reqParams = {
+          order_code: data.order_code
+        }
+        axios.post(api.order.delete, reqParams).then(res => {
+          if (res.data && res.data.code === 200) {
+            this.fetchData()
+          }
+        })
+      }
+    })
+  }
 
   componentDidMount() {
     this.fetchData()
@@ -279,6 +311,16 @@ class Orders extends React.Component<Props> {
             onSuccess={this.handleAddOnSuccess.bind(this)}
             onClose={this.handleAddOnCancel.bind(this)}
           />
+        </Modal>
+        <Modal
+          visible={this.state.modalLogistics}
+          width={1000}
+          footer={null}
+          title="物流信息"
+          maskClosable={true}
+          onCancel={this.handleLogisticsOnClose.bind(this)}
+        >
+          <Logistics id={this.state.logisticsId} />
         </Modal>
       </div>
     )
