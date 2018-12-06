@@ -6,6 +6,10 @@ import api from '@/api'
 import './styles.less'
 
 const Option = Select.Option
+interface Props{
+  onClose: Function,
+  onSuccess: Function
+}
 
 class OrderAdd extends OrderDetail<Props> {
   constructor(props) {
@@ -27,7 +31,7 @@ class OrderAdd extends OrderDetail<Props> {
           if (res.data.code === 200) {
             this.props.form.resetFields()
             message.info('创建成功')
-            this.props.onClose()
+            this.props.onSuccess(true)
           } else {
             message.error(res.data.msg)
           }

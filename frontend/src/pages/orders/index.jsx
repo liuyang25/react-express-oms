@@ -182,10 +182,11 @@ class Orders extends React.Component<Props> {
       modalAdd: true
     })
   }
-  handleDetailOnSuccess() {
+  handleDetailOnCommit() {
     this.setState({
       modalDetail: false
     })
+    this.fetchData()
   }
   handleDetailOnClose() {
     this.setState({
@@ -296,6 +297,7 @@ class Orders extends React.Component<Props> {
         >
           <OrderDetail
             id={this.state.detailId}
+            onCommit={this.handleDetailOnCommit.bind(this)}
             onClose={this.handleDetailOnClose.bind(this)}
           />
         </Modal>
