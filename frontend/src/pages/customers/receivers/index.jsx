@@ -41,7 +41,7 @@ class Receviers extends React.Component<Props> {
         render: (text, record, index) => {
           return (
             <span>
-              <Button onClick={() => this.handleEditButton(record)}>编辑</Button>
+              <Button type="primary" onClick={() => this.handleEditButton(record)}>编辑</Button>
             </span>
           )
         }
@@ -149,13 +149,13 @@ class Receviers extends React.Component<Props> {
           rowKey="customer_id"
           pagination={false}
         />
-        <Pagination
+        {/*<Pagination
           style={{ textAlign: 'right' }}
           onChange={this.handleChangePage}
           total={this.state.total}
           showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
           current={this.state.curPage}
-        />
+        />*/}
         <Modal
           visible={this.state.modalAdd}
           width={800}

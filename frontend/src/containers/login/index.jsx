@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { LoginStore } from '@/stores/loginStore'
 import { inject, observer } from 'mobx-react'
-import { Form, Icon, Input, Button, Checkbox } from 'antd'
+import { Form, Icon, Input, Button, Checkbox, message } from 'antd'
 import axios from '@/utils/axios'
 import api from '@/api'
 import './style.less'
@@ -26,10 +26,12 @@ class Login extends React.Component<Props> {
       }
       axios.post(api.user.login, values).then(res => {
         if (res.data.code === 200) {
-          this.props.loginStore.userName = res.data.name || '无名'
+          this.props.loginStore.userName = res.data.user.user_name || '无名'
+          this.props.loginStore.account = values.account
+          this.props.loginStore.role = res.data.user.role
           this.props.history.push('/')
         } else {
-          alert('登录失败')
+          message.info(res.data.msg)
         }
       })
     })
@@ -41,23 +43,23 @@ class Login extends React.Component<Props> {
       <div className="login">
         <Form onSubmit={this.handleSubmit} className="login-form">
           <FormItem>
-            {getFieldDecorator('userName', {
+            {getFieldDecorator('account', {
               rules: [
-                { required: true, message: 'Please input your username!' }
+                { required: true, message: '输入账号呀!' }
               ]
             })(
               <Input
                 prefix={
                   <Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />
                 }
-                placeholder="Username"
+                placeholder="账号名"
               />
             )}
           </FormItem>
           <FormItem>
             {getFieldDecorator('password', {
               rules: [
-                { required: true, message: 'Please input your Password!' }
+                { required: true, message: '输入密码呀!' }
               ]
             })(
               <Input
@@ -65,7 +67,7 @@ class Login extends React.Component<Props> {
                   <Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />
                 }
                 type="password"
-                placeholder="Password"
+                placeholder="密码"
               />
             )}
           </FormItem>

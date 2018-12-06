@@ -314,7 +314,7 @@ class Orders extends React.Component<Props> {
         </Modal>
         <Modal
           visible={this.state.modalLogistics}
-          width={1000}
+          width={1200}
           footer={null}
           title="物流信息"
           maskClosable={true}

@@ -1,12 +1,13 @@
 import * as React from 'react'
 import { OrderDetail } from './detail'
-import { Form, message } from 'antd'
+import { Form, message, Select, Input, InputNumber, DatePicker } from 'antd'
 import axios from '@/utils/axios'
 import api from '@/api'
 import './styles.less'
 
+const Option = Select.Option
 
-class OrderAdd extends OrderDetail{
+class OrderAdd extends OrderDetail<Props> {
   constructor(props) {
     super(props)
     this.state = {
@@ -34,6 +35,30 @@ class OrderAdd extends OrderDetail{
       })
     } else {
       this.props.onClose()
+    }
+  }
+  // 想用继承写法，报错了
+  renderInput(conf) {
+    switch (conf.type) {
+      case 'number':
+        return <InputNumber />
+      case 'select':
+        const options = this.state[conf.options]
+        return (
+          <Select onChange={conf.onChange} {...conf.params}>
+            {options.map((option, index) => {
+              return (
+                <Option key={index} data={option} value={index}>
+                  {option[conf.key]}
+                </Option>
+              )
+            })}
+          </Select>
+        )
+      case 'date':
+        return <DatePicker />
+      default:
+        return <Input />
     }
   }
   handleCancel() {

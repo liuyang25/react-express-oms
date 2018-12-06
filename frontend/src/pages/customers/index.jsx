@@ -41,7 +41,7 @@ class Customers extends React.Component<Props> {
               <Button onClick={() => this.handleCheckReceview(record.customer_id)}>
                 查看收货方
               </Button>
-              <Button onClick={() => this.handleEditButton(record)}>
+              <Button type="primary" onClick={() => this.handleEditButton(record)}>
                 编辑
               </Button>
             </span>

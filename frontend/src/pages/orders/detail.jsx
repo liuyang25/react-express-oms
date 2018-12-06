@@ -28,30 +28,27 @@ export class OrderDetail extends React.PureComponent<Props> {
       customerOptions: [],
       receiptorOptions: [],
       orderStatusOptions: [
-        [{ value: '1', label: '是' }, { value: '0', label: '否' }]
+        { value: '1', order_closed: '是' }, { value: '0', order_closed: '否' }
       ],
       logisticsStatusOptions: [
-        [{ value: '1', label: '是' }, { value: '0', label: '否' }]
+        { value: '1', logistics_completed: '是' }, { value: '0', logistics_completed: '否' }
       ],
       detailData: {}
     }
   }
-  handleOptionChange(v, option) {
-    this.props.form.setFieldsValue({
-      ...option.props.data
-    })
-  }
+
   displayRows = [
-    { key: 'order_code', label: '货物编号（唯一）' },
+    { key: 'order_code', label: '货物编号（唯一）', disabled:true },
     {
       key: 'receiving_name',
       label: '收货方名称',
       type: 'select',
-      onChange: this.handleOptionChange.bind(this),
+      onChange: this.handleReceiptorChange.bind(this),
       options: 'receiptorOptions',
       params: {
         showSearch:true,
         filterOption: true,
+        clearable: true,
       }
     },
     {
@@ -59,8 +56,9 @@ export class OrderDetail extends React.PureComponent<Props> {
       label: '客户名称',
       type: 'select',
       rules: [{ required: true, message: '请选择客户' }],
-      onChange: this.handleOptionChange.bind(this),
-      options: 'customerOptions'
+      onChange: this.handleCustomerChange.bind(this),
+      options: 'customerOptions',
+      disabled: true,
     },
     {
       key: 'receiving_address',
@@ -71,8 +69,9 @@ export class OrderDetail extends React.PureComponent<Props> {
       label: '客户代码',
       type: 'select',
       rules: [{ required: true, message: '请选择客户' }],
-      onChange: this.handleOptionChange.bind(this),
-      options: 'customerOptions'
+      onChange: this.handleCustomerChange.bind(this),
+      options: 'customerOptions',
+      disabled: true,
     },
     {
       key: 'receiving_contact',
@@ -126,6 +125,19 @@ export class OrderDetail extends React.PureComponent<Props> {
       editing: true
     })
   }
+  mapReqData(data) {
+    const f = (options, key, value)=>{
+      let option = this.state[options][data[key]]
+      if (option) {
+        data[key] = option[value]
+      }
+    }
+    f('orderStatusOptions', 'order_closed', 'value')
+    f('logisticsStatusOptions', 'logistics_completed', 'value')
+    f('customerOptions', 'customer_id', 'customer_id')
+    f('customerOptions', 'customer_name', 'customer_name')
+    f('receiptorOptions', 'receiving_name', 'receiving_name')
+  }
   handleConfirm() {
     if (this.state.editing) {
       this.props.form.validateFieldsAndScroll((err, values) => {
@@ -133,7 +145,10 @@ export class OrderDetail extends React.PureComponent<Props> {
           console.error(err)
           return
         }
-        axios.post(api.order.update, values).then(res => {
+        const reqData = JSON.parse(JSON.stringify(values))
+        this.mapReqData(reqData)
+
+        axios.post(api.order.update, reqData).then(res => {
           if (res.data.code === 200) {
             this.props.form.resetFields()
             message.info('创建成功')
@@ -146,6 +161,34 @@ export class OrderDetail extends React.PureComponent<Props> {
     } else {
       this.props.onClose()
     }
+  }
+  handleCustomerChange(v, option) {
+    this.props.form.setFieldsValue({
+      ...option.props.data
+    })
+
+    // 收货方信息
+    axios.post(api.order.getReceiptorList, {customer_id: option.props.data.customer_id}).then(res => {
+      if (res.data && res.data.code === 200) {
+        const receiptorOptions = []
+        res.data.list.forEach(item => {
+          receiptorOptions.push({
+            receiving_name: item.name,
+            receiving_address: item.address,
+            receiving_contact: item.contact,
+            receiving_comment: item.comment
+          })
+        })
+        this.setState({
+          receiptorOptions
+        })
+      }
+    })
+  }
+  handleReceiptorChange(v, option) {
+    this.props.form.setFieldsValue({
+      ...option.props.data
+    })
   }
   fetchOptions() {
     // 客户信息
@@ -160,23 +203,6 @@ export class OrderDetail extends React.PureComponent<Props> {
         })
         this.setState({
           customerOptions
-        })
-      }
-    })
-    // 收货方信息
-    axios.post(api.receiptor.list).then(res => {
-      if (res.data && res.data.code === 200) {
-        const receiptorOptions = []
-        res.data.list.forEach(item => {
-          receiptorOptions.push({
-            receiving_name: item.compony_name,
-            receiving_address: item.address,
-            receiving_contact: item.contact,
-            receiving_comment: item.comment
-          })
-        })
-        this.setState({
-          receiptorOptions
         })
       }
     })
@@ -197,8 +223,8 @@ export class OrderDetail extends React.PureComponent<Props> {
           const fields = {}
           this.displayRows.forEach(item => {
             let v = res.data.details[item.key]
-            if (item.type === 3) {
-              v = moment(v)
+            if (item.type == 'date') {
+              v = v ? moment(v): undefined
             }
             fields[item.key] = v
           })
@@ -232,7 +258,7 @@ export class OrderDetail extends React.PureComponent<Props> {
           {...conf.params}>
             {options.map((option, index) => {
               return (
-                <Option key={index} data={option} value={option[conf.key]}>
+                <Option key={index} data={option} value={index}>
                   {option[conf.key]}
                 </Option>
               )
@@ -251,7 +277,7 @@ export class OrderDetail extends React.PureComponent<Props> {
       case 'select':
         return v
       case 'date':
-        return moment(v).format('YYYY-MM-DD')
+        return v ? moment(v).format('YYYY-MM-DD'): ''
       default:
         return v
     }

@@ -5,5 +5,7 @@ export default {
   detail: '/order/detail',
   delete: '/order/delete',
   options: '/order/getDict',
-  updateLogistics: '/order/updateLogisticsMsg'
+  updateLogistics: '/order/updateLogisticsMsg',
+  getLogistics: '/order/getLogisticsMsg',
+  getReceiptorList: '/order/getReceiptorList',
 }

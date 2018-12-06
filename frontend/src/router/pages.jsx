@@ -18,7 +18,8 @@ export const mainPages: Page[] = [
     component: Users,
     name: '用户',
     path: '/users',
-    icon: 'user'
+    icon: 'user',
+    permission: 'role',
   },
   {
     name: '客户',

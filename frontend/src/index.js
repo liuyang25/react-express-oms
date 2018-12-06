@@ -2,13 +2,20 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import createRouter from './router/router'
 import { Provider } from 'mobx-react'
+// 国际化
+import { LocaleProvider } from 'antd'
+import zh_CN from 'antd/lib/locale-provider/zh_CN'
+import 'moment/locale/zh-cn'
+
 import stores from './stores'
 import * as serviceWorker from './serviceWorker'
 import './index.less'
 import './common.less'
 
 ReactDOM.render(
-  <Provider {...stores}>{createRouter()}</Provider>,
+  <LocaleProvider locale={zh_CN}>
+    <Provider {...stores}>{createRouter()}</Provider>
+  </LocaleProvider>,
   document.getElementById('root')
 )
 

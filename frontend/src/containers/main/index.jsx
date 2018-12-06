@@ -30,6 +30,12 @@ class Main extends React.Component<Props> {
   }
   // 侧边列表
   renderMenu(page) {
+    if (page.permission) {
+      const role = this.props.loginStore.role
+      if (role !== 0){
+        return null
+      }
+    }
     if (!page.pages) {
       return (
         <Menu.Item key={page.path}>
@@ -55,20 +61,6 @@ class Main extends React.Component<Props> {
         </SubMenu>
       )
     }
-  }
-  renderBreadcrumb2() {
-    const path = this.props.location.pathname
-    const findPath = route => {
-      if (!route) {
-        return ''
-      }
-      for (let i = 0; i < route.length; ++i) {
-        if (path.indexOf(route[i].path) > -1) {
-          return '/' + route[i].name + findPath(route[i].pages)
-        }
-      }
-    }
-    return <Card style={{ textAlign: 'left' }}>{findPath(mainPages)}</Card>
   }
 
   renderBreadcrumb() {
