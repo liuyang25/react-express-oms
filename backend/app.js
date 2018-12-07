@@ -33,9 +33,10 @@ app.use(function(req, res, next) {
 
   console.log(req.url)
   console.log(req.session.login)
-  if ((!req.session || !req.session.login) && req.url.indexOf('login')==-1&&req.url.indexOf('test')==-1) {
+  if ((!req.session || !req.session.login) && req.url.indexOf('login')==-1 && req.url.indexOf('test')==-1 
+       && req.method !='OPTIONS' && req.url.indexOf('logistics')==-1) {
     console.log('!!!')
-    res.send({ code: 1, msg: '请重新登录' })
+    res.send({ code: 1, msg: '请重新登录!!!' })
   } else {
     next()
   }

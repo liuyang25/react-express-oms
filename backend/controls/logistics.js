@@ -1,53 +1,48 @@
-const mysql = require('mysql')
-const func = require('../sql/func')
 
-const { dateFormat } = require('../utils/common')
+let sql = require('../sql/sql');
+let moment = require('moment');
+let func = require('../sql/func');
+let path = require('path');
+const { dateFormat } = require('../utils/common');
+
+
+
+
+function formatData(rows) {
+	return rows.map(row => {
+		let date = moment(row.create_time).format('YYYY-MM-DD');
+		return Object.assign({}, row, {
+			create_time: date
+		});
+	});
+}
+
 
 module.exports = {
-  addLogistics(req, res) {
-    let { goods_code, time, information, comment } = req.body
 
-    if (!goods_code) {
-      res.send({ code: 100, msg: '商品代码不能为空' })
-      return
-    }
-    const sql =
-      'insert into logistics(goods_code,time,information,comment,creator) values(?,?,?,?,?)'
-    if (!time) {
-      time = Date.now()
-    }
-    const arr = [
-      goods_code,
-      dateFormat(new Date(time), 'YYYY-MM-DD hh:mm:ss'),
-      information,
-      comment,
-      req.session.login.user_name
-    ]
-    func.connPool(sql, arr, (err, rows) => {
-      if (err) {
-        res.send({ code: 100, msg: '内部错误' })
-        return
-      }
-      res.send({ code: 200, msg: 'ok' })
-    })
-  },
 
-  listLogistics(req, res) {
-    let cur_page = req.body.cur_page || 1
-    let sql, arr, endLimit, startLimit
+	listLogisticsMsg(req,res){
+		let order_code = req.body.order_code;
+		console.log(order_code);
+		let sql = 'select logistics_msg from orders where order_code = ?';
+		let arr = [order_code];
+		func.connPool(sql, arr, (err, rows) => {
+			console.log(rows[0]);
+			if(rows[0].logistics_msg != null && rows[0].logistics_msg != ''){
+				res.json({
+					code: 200,
+					msg: 'ok',
+					list: JSON.parse(rows[0].logistics_msg)
+				});
+			}else{
+				res.json({
+					code: 200,
+					msg: 'ok',
+					list: []
+				});
+			}
+			
+		});
+	},
 
-    endLimit = cur_page * 10
-    startLimit = endLimit - 10
-
-    sql = 'select * from logistics  limit ?, ?'
-    arr = [startLimit, endLimit]
-
-    func.connPool(sql, arr, (err, rows) => {
-      res.json({
-        code: 200,
-        msg: 'ok',
-        resultList: rows
-      })
-    })
-  }
-}
+};

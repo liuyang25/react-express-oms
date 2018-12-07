@@ -25,6 +25,7 @@ router.get(api.userAutoLogin, user.autoLogin); // 自动登录
 
 router.post(api.userAdd, user.addOne);
 router.post(api.userDelete, user.deleteOne);
+router.post(api.userUpdate, user.updateOne);
 router.post(api.userDeleteMulti, user.deleteMulti);
 router.post(api.userLogin, user.login); // 登录
 router.post(api.userChangeRole, user.controlVisit, user.changeRole); // 更改权限
@@ -43,8 +44,7 @@ router.post(api.receiptorUpdate, receiptor.updateReceiptor);
 
 
 //物流 
-router.post(api.logisticsAdd, logistics.addLogistics);
-router.post(api.logisticsList, logistics.listLogistics);
+router.post(api.logisticsList, logistics.listLogisticsMsg);
 
 
 // order

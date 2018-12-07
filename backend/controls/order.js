@@ -219,8 +219,8 @@ module.exports = {
 	},
 
 	getReceiptorList(req,res){
-		let primaeval_customer = req.body.primaeval_customer;
-		let sql = 'select CONCAT(principal,", ",componey_name) as name, address,contact,comment from customer_receipt where primaeval_customer = ?';
+		let primaeval_customer = req.body.customer_id;
+		let sql = 'select id ,CONCAT(principal,", ",componey_name) as name, address,contact,comment from customer_receipt where primaeval_customer = ?';
 		let arr = [primaeval_customer];
 		func.connPool(sql, arr, (err, rows) => {
 			res.json({
@@ -234,19 +234,31 @@ module.exports = {
 
 	getLogisticsMsg(req,res){
 		let order_code = req.body.order_code;
+		console.log(order_code);
 		let sql = 'select logistics_msg from orders where order_code = ?';
 		let arr = [order_code];
 		func.connPool(sql, arr, (err, rows) => {
-			res.json({
-			    code: 200,
-			    msg: 'ok',
-				list: rows
-			});
+			console.log(rows[0]);
+			if(rows[0].logistics_msg != null && rows[0].logistics_msg != ''){
+				res.json({
+					code: 200,
+					msg: 'ok',
+					list: JSON.parse(rows[0].logistics_msg)
+				});
+			}else{
+				res.json({
+					code: 200,
+					msg: 'ok',
+					list: []
+				});
+			}
+			
 		});
 	},
 
 	updateLogisticsMsg(req,res){
-		let logistics_msg = req.body.logistics_msg
+		let logistics_msg = JSON.stringify(req.body.logistics_msg);
+		console.log(logistics_msg);
 		let order_code = req.body.order_code;
 		let sql = 'update orders set logistics_msg = ? where order_code = ?';
 		let arr = [logistics_msg,order_code];

@@ -18,15 +18,14 @@ function formatData(rows) {
 			case 10:
 				obj.role = '管理员';
 				break;
-			case 100:
+			case 0:
 				obj.role = '超级管理员';
 		}
-
-		delete row.password;
 
 		return Object.assign({}, row, {
 			create_time: date
 		}, obj);
+
 	});
 }
 
@@ -35,63 +34,72 @@ module.exports = {
 
 	fetchAll(req, res) {
 		
-		 let cur_page =req.body.cur_page;
-		  let sql, arr ,endLimit ,startLimit;
-		
-		
-
-	
-				 endLimit = cur_page *10;
-			 startLimit =  endLimit -10;
-			
-			
-				// sql ='select * from user  limit ?, ?';
-				sql ='select * from user';
-				   arr = [startLimit , endLimit];
-			
-		
-		
-		
+		let cur_page =req.body.cur_page || 1;
+		let sql, arr ,endLimit ,startLimit;
+		endLimit =  10;
+		startLimit =  (cur_page-1)*10;
+		// sql ='select * from user  limit ?, ?';
+		sql ='select * from user';
+		arr = [startLimit , endLimit];
 		func.connPool(sql, arr, (err, rows) => {
 			rows = formatData(rows);
 			res.json({
 				code: 200,
-				msg: 'ok',
+				msg: 'ture',
 				resultList: rows
 			});
 
 		});
-		
-		
-
-
-	
 	},
 
 	// 添加用户
-	addOne(req, res) {
-		let name = req.body.name;
-		let pass = req.body.pass;
-		let role = req.body.role;
-
+	async addOne(req, res) {
+		let name = req.body.user_name;
+		let pass = req.body.password;
+		let role = req.body.role || 1;
+		let account = req.body.account;
+		let sql = 'INSERT INTO user(user_name, account,password,role) VALUES(?,?,?,?)';
+		let arr = [name,account, pass, role];
 		
+		if (!account || !pass || !name) {
+			res.send({code:100, msg:'账号、密码、用户名不能为空'});
+			return;
+		  }
+	  
+		  let result = await func.query('select count(account) as sum from user  where account = ?', account);
+		  if(result[0].sum > 0 ){
+			res.send({code:100, msg:'账号不能重复'});
+			return;
+		  }
 
-		let sql = 'INSERT INTO user(user_name, password,role) VALUES(?,?,?)';
-		let arr = [name, pass, role];
-
-		
-		
 		func.connPool(sql, arr, (err, rows) => {
 			res.json({
 				code: 200,
-				msg: 'done'
+				msg: 'ture'
 			});
-
 		});
-		
-		
-	
-		
+	},
+
+	// 修改用户名和密码
+	updateOne(req, res) {
+		let name = req.body.user_name;
+		let pass = req.body.password;
+		let role = req.body.role;
+		let account = req.body.account;
+		let sql = 'update user set user_name=?,password=? where account=?';
+		let arr = [name, pass,account];
+
+		if (!account || !pass || !name) {
+			res.send({code:100, msg:'账号、密码、用户名不能为空'});
+			return;
+		  }
+	  
+		func.connPool(sql, arr, (err, rows) => {
+			res.json({
+				code: 200,
+				msg: 'ture'
+			});
+		});
 	},
 
 
@@ -100,16 +108,14 @@ module.exports = {
 
 	deleteOne(req, res) {
 
-		let id = req.body.id;
-
-		var sql = 'DELETE  from user WHERE id =? ' ;
-		
-		let arr = [id];
+		let account = req.body.account;
+		var sql = 'DELETE  from user WHERE id = ? ' ;
+		let arr = [account];
 
 		func.connPool(sql, arr, (err, rows) => {
 			res.json({
 				code: 200,
-				msg: 'done'
+				msg: 'ture'
 			});
 		});
 
@@ -130,7 +136,7 @@ module.exports = {
 		func.connPool(sql, arr, (err, rows) => {
 			res.json({
 				code: 200,
-				msg: 'done'
+				msg: 'ture'
 			});
 		});
 
@@ -149,37 +155,38 @@ module.exports = {
 
 	// 登录
 	login(req, res) {
+		let account = req.body.account;
+		let password = req.body.password || '';
 
 
-		let user_name = req.body.userName;
-		let password = req.body.password;
-
-			let sql = 'select * from user WHERE user_name = ? ';
+			let sql = 'select * from user WHERE account = ? ';
 		
-			let arr = [user_name];
-		
+			let arr = [account];
+		    console.log(arr);
 			func.connPool(sql, arr, (err, rows) => {
+				console.log(err);
 				if (!rows.length) {
-
 					res.json({
 						code: 400,
 						msg: '用户名不存在'
 					});
 					return;
 				}
-
-
+				console.log(rows);
 				let pass = rows[0].password;
-
-
+				if(password != pass){
+					res.json({
+						code: 400,
+						msg: '密码错误'
+					});
+					return;
+				}
 				let user = {
-					user_id: rows[0].id,
+					account: rows[0].account,
 					user_name: rows[0].user_name,
 					role: rows[0].role,
 				};
-
 				req.session.login = user;
-
 				res.json({
 					code: 200,
 					msg: '登录成功',
@@ -262,22 +269,13 @@ module.exports = {
 			if (rows.affectedRows) {
 					res.json({
 						code: 200,
-						msg: 'done'
+						msg: 'ture'
 					});
 				}
 		});
 
 		
 	},
-	
-	
-
-	
-	
-	
-	
-	
-	
 	
 
 };

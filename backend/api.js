@@ -7,6 +7,7 @@ module.exports = {
     userList: path + '/user/list',
     userDelete: path + '/user/delete',
     userAdd: path + '/user/add',
+    userUpdate: path + '/user/update',
     userDeleteMulti: path + '/user/delete-multi',
     userLogin: path + '/user/login',
     userLogout: path + '/user/logout',
@@ -69,6 +70,5 @@ module.exports = {
     receiptorUpdate: path + '/receiptor/update',
 
 
-    logisticsAdd: path + '/logistics/add',
     logisticsList: path + '/logistics/list',
 };
