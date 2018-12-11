@@ -25,8 +25,9 @@ const publicPath = '/'
 // as %PUBLIC_URL% in `index.html` and `process.env.PUBLIC_URL` in JavaScript.
 // Omit trailing slash as %PUBLIC_PATH%/xyz looks better than %PUBLIC_PATH%xyz.
 const publicUrl = ''
+const baseApi = 'http://172.24.248.176:9999/api'
 // Get environment variables to inject into our app.
-const env = getClientEnvironment(publicUrl)
+const env = getClientEnvironment(publicUrl, baseApi)
 
 // Check if TypeScript is setup
 const useTypeScript = fs.existsSync(paths.appTsConfig)
@@ -38,7 +39,7 @@ const lessRegex = /\.(less)$/
 const lessModuleRegex = /\.module\.(less)$/
 
 // common function to get style loaders
-const getStyleLoaders = (cssOptions, preProcessor) => {
+const getStyleLoaders = (cssOptions, preProcessor, preProcessorOptions) => {
   const loaders = [
     require.resolve('style-loader'),
     {
@@ -67,7 +68,7 @@ const getStyleLoaders = (cssOptions, preProcessor) => {
     }
   ]
   if (preProcessor) {
-    loaders.push(require.resolve(preProcessor))
+    loaders.push({ loader: require.resolve(preProcessor), options: preProcessorOptions })
   }
   return loaders
 }
@@ -299,8 +300,12 @@ module.exports = {
             use: getStyleLoaders(
               {
                 importLoaders: 2,
+                javascriptEnabled: true
               },
-              'less-loader'
+              'less-loader',
+              {
+                javascriptEnabled: true
+              }
             )
           },
           // Adds support for CSS Modules, but using SASS
@@ -314,7 +319,10 @@ module.exports = {
                 camelCase:true,
                 getLocalIdent: getCSSModuleLocalIdent
               },
-              'less-loader'
+              'less-loader',
+              {
+                javascriptEnabled: true
+              }
             )
           },
           // "file" loader makes sure those assets get served by WebpackDevServer.

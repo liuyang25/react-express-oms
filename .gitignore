@@ -6,3 +6,9 @@ frontend/node_modules/
 frontend/dist/
 
 backend/字段文档\(1\)\.pages
+
+frontend/build/
+
+frontend/build\.sh
+
+frontend/build\.tar\.gz
