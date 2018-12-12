@@ -30,12 +30,12 @@ export class OrderDetail extends React.PureComponent<Props> {
       customerOptions: [],
       receiptorOptions: [],
       orderStatusOptions: [
-        { value: '1', order_closed: '是' },
-        { value: '0', order_closed: '否' }
+        { value: '0', order_closed: '否' },
+        { value: '1', order_closed: '是' }
       ],
       logisticsStatusOptions: [
-        { value: '1', logistics_completed: '是' },
-        { value: '0', logistics_completed: '否' }
+        { value: '0', logistics_completed: '否' },
+        { value: '1', logistics_completed: '是' }
       ],
       detailData: {}
     }
@@ -110,13 +110,15 @@ export class OrderDetail extends React.PureComponent<Props> {
       key: 'order_closed',
       label: '订单是否关闭',
       type: 'select',
-      options: 'orderStatusOptions'
+      options: 'orderStatusOptions',
+      map: (v) => v? '是': '否'
     },
     {
       key: 'logistics_completed',
       label: '物流是否完结',
       type: 'select',
-      options: 'logisticsStatusOptions'
+      options: 'logisticsStatusOptions',
+      map: (v) => v? '是': '否'
     }
   ]
   handleCancel() {
@@ -156,7 +158,7 @@ export class OrderDetail extends React.PureComponent<Props> {
         axios.post(api.order.update, reqData).then(res => {
           if (res.data.code === 200) {
             this.props.form.resetFields()
-            message.info('创建成功')
+            message.info('更新成功')
             this.props.onCommit()
           } else {
             message.error(res.data.msg)
@@ -289,7 +291,7 @@ export class OrderDetail extends React.PureComponent<Props> {
     const v = this.state.detailData[conf.key]
     switch (conf.type) {
       case 'select':
-        return v
+        return conf.map ? conf.map(v) : v
       case 'date':
         return v ? moment(v).format('YYYY-MM-DD') : ''
       default:

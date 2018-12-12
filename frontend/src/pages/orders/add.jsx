@@ -27,7 +27,10 @@ class OrderAdd extends OrderDetail<Props> {
           console.error(err)
           return
         }
-        axios.post(api.order.add, values).then(res => {
+        const reqData = JSON.parse(JSON.stringify(values))
+        this.mapReqData(reqData)
+        
+        axios.post(api.order.add, reqData).then(res => {
           if (res.data.code === 200) {
             this.props.form.resetFields()
             message.info('创建成功')
