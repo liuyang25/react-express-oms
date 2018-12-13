@@ -2,6 +2,7 @@ import * as React from 'react'
 import { LoginStore } from '@/stores/loginStore'
 import { inject, observer } from 'mobx-react'
 import { Form, Icon, Input, Button, Checkbox, message } from 'antd'
+import Parallax from 'parallax-js'
 import axios from '@/utils/axios'
 import api from '@/api'
 import './style.less'
@@ -36,11 +37,21 @@ class Login extends React.Component<Props> {
       })
     })
   }
+  componentDidMount(){
+    var scene = document.getElementById('scene');
+    var parallaxInstance = new Parallax(scene);
+  }
 
   render() {
     const { getFieldDecorator } = this.props.form
+    const bg = require('@/assets/images/bg.jpg')
     return (
       <div className="login">
+        <ul id="scene">
+          <li data-depth="0.2" data-limit-y="true" data-calibrate-y="true">
+            <img className="bg" alt="bg" src={bg}/>
+          </li>
+        </ul>
         <Form onSubmit={this.handleSubmit} className="login-form">
           <FormItem>
             {getFieldDecorator('account', {

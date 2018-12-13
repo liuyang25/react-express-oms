@@ -159,6 +159,9 @@ export class OrderDetail extends React.PureComponent<Props> {
           if (res.data.code === 200) {
             this.props.form.resetFields()
             message.info('更新成功')
+            this.setState({
+              editing: false
+            })
             this.props.onCommit()
           } else {
             message.error(res.data.msg)

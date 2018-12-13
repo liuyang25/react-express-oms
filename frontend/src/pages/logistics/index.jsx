@@ -101,8 +101,7 @@ class Logistics extends React.Component<Props> {
           return item
         }), // 使用本地数据或后端返回数据
         editingIndex: -1
-      })
-      this.syncData(true)
+      }, ()=>this.syncData(true))
     })
   }
   delete(index) {
