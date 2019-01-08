@@ -1,1 +1,1 @@
-{"code":200,"msg":"ok", "name": "呵呵"}
+{"code":200,"msg":"ok", "user":{"user_name": "呵呵", "role": "1"}}
