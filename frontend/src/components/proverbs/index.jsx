@@ -67,7 +67,7 @@ class Proverb extends React.PureComponent<Props> {
       this.setText(config[Math.floor(Math.random()* config.length)])
     }, 5000)
   }
-  componentWillUnMount(){
+  componentWillUnmount(){
     if(this.timer!= null) {
       clearInterval(this.state.timer);
     }

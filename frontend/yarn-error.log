@@ -1,26 +1,23 @@
 Arguments: 
-  /usr/local/bin/node /Users/liuyang/.yarn/bin/yarn.js start
+  /usr/local/bin/node /Users/liuyang/.yarn/bin/yarn.js upgrade
 
 PATH: 
-  /Users/liuyang/.yarn/bin:/Users/liuyang/.config/yarn/global/node_modules/.bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/share/dotnet:~/.dotnet/tools:/usr/local/mysql/bin
+  /usr/local/opt/redis@3.2/bin:/Users/liuyang/.avn/bin:/Users/liuyang/.yarn/bin:/Users/liuyang/.config/yarn/global/node_modules/.bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/share/dotnet:/opt/X11/bin:~/.dotnet/tools:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Applications/Wireshark.app/Contents/MacOS:/Applications/Xamarin Workbooks.app/Contents/SharedSupport/path-bin:/usr/local/opt/redis@3.2/bin:/Users/liuyang/.avn/bin:/Users/liuyang/.yarn/bin:/Users/liuyang/.config/yarn/global/node_modules/.bin:/usr/local/mysql/bin:/usr/local/mysql/bin
 
 Yarn version: 
   1.9.4
 
 Node version: 
-  8.11.2
+  12.13.1
 
 Platform: 
   darwin x64
 
 Trace: 
-  SyntaxError: /Users/liuyang/workspace/react/oam-front/package.json: Unexpected token } in JSON at position 3386
-      at JSON.parse (<anonymous>)
-      at /Users/liuyang/.yarn/lib/cli.js:1130:59
-      at Generator.next (<anonymous>)
-      at step (/Users/liuyang/.yarn/lib/cli.js:92:30)
-      at /Users/liuyang/.yarn/lib/cli.js:103:13
-      at <anonymous>
+  Error: https://registry.npmjs.org/@babel%2fcore: ETIMEDOUT
+      at Timeout._onTimeout (/Users/liuyang/.yarn/lib/cli.js:138128:19)
+      at listOnTimeout (internal/timers.js:531:17)
+      at processTimers (internal/timers.js:475:7)
 
 npm manifest: 
   {
@@ -32,6 +29,7 @@ npm manifest:
       "@babel/plugin-transform-react-jsx-source": "^7.0.0",
       "@svgr/webpack": "2.4.1",
       "antd": "^3.10.4",
+      "axios": "^0.18.0",
       "babel-core": "7.0.0-bridge.0",
       "babel-eslint": "9.0.0",
       "babel-jest": "23.6.0",
@@ -42,10 +40,11 @@ npm manifest:
       "bfj": "6.1.1",
       "case-sensitive-paths-webpack-plugin": "2.1.2",
       "chalk": "2.4.1",
+      "cross-env": "^5.2.0",
       "css-loader": "1.0.0",
       "dotenv": "6.0.0",
       "dotenv-expand": "4.2.0",
-      "eslint": "5.6.0",
+      "eslint": "5.9.0",
       "eslint-config-react-app": "^3.0.5",
       "eslint-loader": "2.1.1",
       "eslint-plugin-flowtype": "2.50.1",
@@ -60,8 +59,14 @@ npm manifest:
       "jest": "23.6.0",
       "jest-pnp-resolver": "1.0.1",
       "jest-resolve": "23.6.0",
+      "less": "^3.9.0",
+      "less-loader": "^4.1.0",
       "mini-css-extract-plugin": "0.4.3",
+      "mobx": "^5.6.0",
+      "mobx-react": "^5.3.6",
+      "moment": "^2.22.2",
       "optimize-css-assets-webpack-plugin": "5.0.1",
+      "parallax-js": "^3.1.0",
       "pnp-webpack-plugin": "1.1.0",
       "postcss-flexbugs-fixes": "4.1.0",
       "postcss-loader": "3.0.0",
@@ -71,6 +76,7 @@ npm manifest:
       "react-app-polyfill": "^0.1.3",
       "react-dev-utils": "^6.1.1",
       "react-dom": "^16.6.1",
+      "react-router-dom": "^4.3.1",
       "resolve": "1.8.1",
       "sass-loader": "7.1.0",
       "style-loader": "0.23.0",
@@ -83,6 +89,7 @@ npm manifest:
     },
     "scripts": {
       "start": "node scripts/start.js",
+      "mock": "cross-env USE_MOCK=ture node scripts/start.js",
       "build": "node scripts/build.js",
       "test": "node scripts/test.js"
     },
@@ -141,16 +148,22 @@ npm manifest:
         "react-app"
       ],
       "plugins": [
-        ["import", {
-          "libraryName": "antd",
-          "style": true,
-        }]
+        [
+          "import",
+          {
+            "libraryName": "antd",
+            "style": true
+          }
+        ],
+        [
+          "@babel/plugin-proposal-decorators",
+          {
+            "legacy": true
+          }
+        ]
       ]
     },
-    "devDependencies": {
-      "less": "^3.8.1",
-      "less-loader": "^4.1.0"
-    }
+    "devDependencies": {}
   }
 
 yarn manifest: 
@@ -1117,8 +1130,8 @@ Lockfile:
       acorn-walk "^6.0.1"
   
   acorn-jsx@^5.0.0:
-    version "5.0.0"
-    resolved "https://registry.yarnpkg.com/acorn-jsx/-/acorn-jsx-5.0.0.tgz#958584ddb60990c02c97c1bd9d521fce433bb101"
+    version "5.0.1"
+    resolved "https://registry.yarnpkg.com/acorn-jsx/-/acorn-jsx-5.0.1.tgz#32a064fd925429216a09b141102bfdd185fae40e"
   
   acorn-walk@^6.0.1:
     version "6.1.0"
@@ -1146,13 +1159,22 @@ Lockfile:
     version "1.0.0"
     resolved "https://registry.yarnpkg.com/ajv-errors/-/ajv-errors-1.0.0.tgz#ecf021fa108fd17dfb5e6b383f2dd233e31ffc59"
   
-  ajv-keywords@^3.0.0, ajv-keywords@^3.1.0:
+  ajv-keywords@^3.1.0:
     version "3.2.0"
     resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-3.2.0.tgz#e86b819c602cf8821ad637413698f1dec021847a"
   
-  ajv@^6.0.1, ajv@^6.1.0, ajv@^6.5.3, ajv@^6.5.5:
+  ajv@^6.1.0, ajv@^6.5.5:
     version "6.5.5"
     resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.5.5.tgz#cf97cdade71c6399a92c6d6c4177381291b781a1"
+    dependencies:
+      fast-deep-equal "^2.0.1"
+      fast-json-stable-stringify "^2.0.0"
+      json-schema-traverse "^0.4.1"
+      uri-js "^4.2.2"
+  
+  ajv@^6.5.3, ajv@^6.6.1:
+    version "6.6.1"
+    resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.6.1.tgz#6360f5ed0d80f232cc2b294c362d5dc2e538dd61"
     dependencies:
       fast-deep-equal "^2.0.1"
       fast-json-stable-stringify "^2.0.0"
@@ -1182,6 +1204,10 @@ Lockfile:
   ansi-regex@^3.0.0:
     version "3.0.0"
     resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-3.0.0.tgz#ed0317c322064f79466c02966bddb605ab37d998"
+  
+  ansi-regex@^4.0.0:
+    version "4.0.0"
+    resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-4.0.0.tgz#70de791edf021404c3fd615aa89118ae0432e5a9"
   
   ansi-styles@^2.2.1:
     version "2.2.1"
@@ -1460,6 +1486,13 @@ Lockfile:
   aws4@^1.8.0:
     version "1.8.0"
     resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.8.0.tgz#f0e003d9ca9e7f59c7a508945d7b2ef9a04a542f"
+  
+  axios@^0.18.0:
+    version "0.18.0"
+    resolved "http://registry.npmjs.org/axios/-/axios-0.18.0.tgz#32d53e4851efdc0a11993b6cd000789d70c05102"
+    dependencies:
+      follow-redirects "^1.3.0"
+      is-buffer "^1.1.5"
   
   axobject-query@^2.0.1:
     version "2.0.2"
@@ -2450,6 +2483,13 @@ Lockfile:
       fbjs "^0.8.0"
       gud "^1.0.0"
   
+  cross-env@^5.2.0:
+    version "5.2.0"
+    resolved "https://registry.yarnpkg.com/cross-env/-/cross-env-5.2.0.tgz#6ecd4c015d5773e614039ee529076669b9d126f2"
+    dependencies:
+      cross-spawn "^6.0.5"
+      is-windows "^1.0.0"
+  
   cross-spawn@6.0.5, cross-spawn@^6.0.0, cross-spawn@^6.0.5:
     version "6.0.5"
     resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-6.0.5.tgz#4a5ec7c64dfae22c3a14124dbacdee846d80cbc4"
@@ -2706,6 +2746,12 @@ Lockfile:
   debug@^3.1.0:
     version "3.2.6"
     resolved "https://registry.yarnpkg.com/debug/-/debug-3.2.6.tgz#e83d17de16d8a7efb7717edbe5fb10135eee629b"
+    dependencies:
+      ms "^2.1.1"
+  
+  debug@^4.0.1:
+    version "4.1.0"
+    resolved "https://registry.yarnpkg.com/debug/-/debug-4.1.0.tgz#373687bffa678b38b1cd91f861b63850035ddc87"
     dependencies:
       ms "^2.1.1"
   
@@ -3203,15 +3249,15 @@ Lockfile:
     version "1.0.0"
     resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#3f3180fb2e291017716acb4c9d6d5b5c34a6a81d"
   
-  eslint@5.6.0:
-    version "5.6.0"
-    resolved "https://registry.yarnpkg.com/eslint/-/eslint-5.6.0.tgz#b6f7806041af01f71b3f1895cbb20971ea4b6223"
+  eslint@5.9.0:
+    version "5.9.0"
+    resolved "https://registry.yarnpkg.com/eslint/-/eslint-5.9.0.tgz#b234b6d15ef84b5849c6de2af43195a2d59d408e"
     dependencies:
       "@babel/code-frame" "^7.0.0"
       ajv "^6.5.3"
       chalk "^2.1.0"
       cross-spawn "^6.0.5"
-      debug "^3.1.0"
+      debug "^4.0.1"
       doctrine "^2.1.0"
       eslint-scope "^4.0.0"
       eslint-utils "^1.3.1"
@@ -3238,12 +3284,12 @@ Lockfile:
       path-is-inside "^1.0.2"
       pluralize "^7.0.0"
       progress "^2.0.0"
-      regexpp "^2.0.0"
+      regexpp "^2.0.1"
       require-uncached "^1.0.3"
       semver "^5.5.1"
       strip-ansi "^4.0.0"
       strip-json-comments "^2.0.1"
-      table "^4.0.3"
+      table "^5.0.2"
       text-table "^0.2.0"
   
   espree@^4.0.0:
@@ -3663,7 +3709,7 @@ Lockfile:
       inherits "^2.0.1"
       readable-stream "^2.0.4"
   
-  follow-redirects@^1.0.0:
+  follow-redirects@^1.0.0, follow-redirects@^1.3.0:
     version "1.5.9"
     resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.5.9.tgz#c9ed9d748b814a39535716e531b9196a845d89c6"
     dependencies:
@@ -3881,9 +3927,13 @@ Lockfile:
       is-windows "^1.0.1"
       which "^1.2.14"
   
-  globals@^11.1.0, globals@^11.7.0:
+  globals@^11.1.0:
     version "11.8.0"
     resolved "https://registry.yarnpkg.com/globals/-/globals-11.8.0.tgz#c1ef45ee9bed6badf0663c5cb90e8d1adec1321d"
+  
+  globals@^11.7.0:
+    version "11.9.0"
+    resolved "https://registry.yarnpkg.com/globals/-/globals-11.9.0.tgz#bde236808e987f290768a93d065060d78e6ab249"
   
   globals@^9.18.0:
     version "9.18.0"
@@ -4077,6 +4127,16 @@ Lockfile:
     version "1.1.0"
     resolved "https://registry.yarnpkg.com/hex-color-regex/-/hex-color-regex-1.1.0.tgz#4c06fccb4602fe2602b3c93df82d7e7dbf1a8a8e"
   
+  history@^4.7.2:
+    version "4.7.2"
+    resolved "https://registry.yarnpkg.com/history/-/history-4.7.2.tgz#22b5c7f31633c5b8021c7f4a8a954ac139ee8d5b"
+    dependencies:
+      invariant "^2.2.1"
+      loose-envify "^1.2.0"
+      resolve-pathname "^2.2.0"
+      value-equal "^0.4.0"
+      warning "^3.0.0"
+  
   hmac-drbg@^1.0.0:
     version "1.0.1"
     resolved "https://registry.yarnpkg.com/hmac-drbg/-/hmac-drbg-1.0.1.tgz#d2745701025a6c775a6c545793ed502fc0c649a1"
@@ -4089,9 +4149,15 @@ Lockfile:
     version "4.2.1"
     resolved "http://registry.npmjs.org/hoek/-/hoek-4.2.1.tgz#9634502aa12c445dd5a7c5734b572bb8738aacbb"
   
-  hoist-non-react-statics@^2.3.1:
+  hoist-non-react-statics@^2.3.1, hoist-non-react-statics@^2.5.0:
     version "2.5.5"
     resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-2.5.5.tgz#c5903cf409c0dfd908f388e619d86b9c1174cb47"
+  
+  hoist-non-react-statics@^3.0.0:
+    version "3.1.0"
+    resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.1.0.tgz#42414ccdfff019cd2168168be998c7b3bd5245c0"
+    dependencies:
+      react-is "^16.3.2"
   
   home-or-tmp@^2.0.0:
     version "2.0.0"
@@ -4354,7 +4420,7 @@ Lockfile:
     version "1.3.5"
     resolved "https://registry.yarnpkg.com/ini/-/ini-1.3.5.tgz#eee25f56db1c9ec6085e0c22778083f596abf927"
   
-  inquirer@6.2.0, inquirer@^6.1.0:
+  inquirer@6.2.0:
     version "6.2.0"
     resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-6.2.0.tgz#51adcd776f661369dc1e894859c2560a224abdd8"
     dependencies:
@@ -4372,6 +4438,24 @@ Lockfile:
       strip-ansi "^4.0.0"
       through "^2.3.6"
   
+  inquirer@^6.1.0:
+    version "6.2.1"
+    resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-6.2.1.tgz#9943fc4882161bdb0b0c9276769c75b32dbfcd52"
+    dependencies:
+      ansi-escapes "^3.0.0"
+      chalk "^2.0.0"
+      cli-cursor "^2.1.0"
+      cli-width "^2.0.0"
+      external-editor "^3.0.0"
+      figures "^2.0.0"
+      lodash "^4.17.10"
+      mute-stream "0.0.7"
+      run-async "^2.2.0"
+      rxjs "^6.1.0"
+      string-width "^2.1.0"
+      strip-ansi "^5.0.0"
+      through "^2.3.6"
+  
   internal-ip@^3.0.1:
     version "3.0.1"
     resolved "https://registry.yarnpkg.com/internal-ip/-/internal-ip-3.0.1.tgz#df5c99876e1d2eb2ea2d74f520e3f669a00ece27"
@@ -4383,7 +4467,7 @@ Lockfile:
     version "1.0.0"
     resolved "https://registry.yarnpkg.com/intersperse/-/intersperse-1.0.0.tgz#f2561fb1cfef9f5277cc3347a22886b4351a5181"
   
-  invariant@^2.2.2, invariant@^2.2.4:
+  invariant@^2.2.1, invariant@^2.2.2, invariant@^2.2.4:
     version "2.2.4"
     resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
     dependencies:
@@ -4676,7 +4760,7 @@ Lockfile:
     version "0.2.1"
     resolved "https://registry.yarnpkg.com/is-utf8/-/is-utf8-0.2.1.tgz#4b0da1442104d1b336340e80797e865cf39f7d72"
   
-  is-windows@^1.0.1, is-windows@^1.0.2:
+  is-windows@^1.0.0, is-windows@^1.0.1, is-windows@^1.0.2:
     version "1.0.2"
     resolved "https://registry.yarnpkg.com/is-windows/-/is-windows-1.0.2.tgz#d1850eb9791ecd18e6182ce12a30f396634bb19d"
   
@@ -5323,9 +5407,9 @@ Lockfile:
       loader-utils "^1.1.0"
       pify "^3.0.0"
   
-  less@^3.8.1:
-    version "3.8.1"
-    resolved "https://registry.yarnpkg.com/less/-/less-3.8.1.tgz#f31758598ef5a1930dd4caefa9e4340641e71e1d"
+  less@^3.9.0:
+    version "3.9.0"
+    resolved "https://registry.yarnpkg.com/less/-/less-3.9.0.tgz#b7511c43f37cf57dc87dffd9883ec121289b1474"
     dependencies:
       clone "^2.1.2"
     optionalDependencies:
@@ -5474,7 +5558,7 @@ Lockfile:
     version "1.6.1"
     resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.6.1.tgz#e0fc95133b6ef276cdc8887cdaf24aa6f156f8fa"
   
-  loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.3.1:
+  loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.2.0, loose-envify@^1.3.1:
     version "1.4.0"
     resolved "https://registry.yarnpkg.com/loose-envify/-/loose-envify-1.4.0.tgz#71ee51fa7be4caec1a63839f7e682d8132d30caf"
     dependencies:
@@ -5768,6 +5852,17 @@ Lockfile:
     resolved "http://registry.npmjs.org/mkdirp/-/mkdirp-0.5.1.tgz#30057438eac6cf7f8c4767f38648d6697d75c903"
     dependencies:
       minimist "0.0.8"
+  
+  mobx-react@^5.3.6:
+    version "5.3.6"
+    resolved "https://registry.yarnpkg.com/mobx-react/-/mobx-react-5.3.6.tgz#0bead0173aed7d12ace4981b53c28db4d61de9ef"
+    dependencies:
+      hoist-non-react-statics "^3.0.0"
+      react-lifecycles-compat "^3.0.2"
+  
+  mobx@^5.6.0:
+    version "5.6.0"
+    resolved "https://registry.yarnpkg.com/mobx/-/mobx-5.6.0.tgz#e381c357e0ed7685a99a896455ecc66ff5ab84ee"
   
   moment@2.x, moment@^2.22.2:
     version "2.22.2"
@@ -6232,6 +6327,13 @@ Lockfile:
     version "1.0.6"
     resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.6.tgz#0101211baa70c4bca4a0f63f2206e97b7dfaf258"
   
+  parallax-js@^3.1.0:
+    version "3.1.0"
+    resolved "https://registry.yarnpkg.com/parallax-js/-/parallax-js-3.1.0.tgz#cc8a5d7dd5e2529b94b9a34f3d4cd13a22eb049e"
+    dependencies:
+      object-assign "^4.1.1"
+      raf "^3.3.0"
+  
   parallel-transform@^1.1.0:
     version "1.1.0"
     resolved "https://registry.yarnpkg.com/parallel-transform/-/parallel-transform-1.1.0.tgz#d410f065b05da23081fcd10f28854c29bda33b06"
@@ -6335,6 +6437,12 @@ Lockfile:
   path-to-regexp@0.1.7:
     version "0.1.7"
     resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-0.1.7.tgz#df604178005f522f15eb4490e7247a1bfaa67f8c"
+  
+  path-to-regexp@^1.7.0:
+    version "1.7.0"
+    resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-1.7.0.tgz#59fde0f435badacba103a84e9d3bc64e96b9937d"
+    dependencies:
+      isarray "0.0.1"
   
   path-type@^1.0.0:
     version "1.1.0"
@@ -7042,7 +7150,7 @@ Lockfile:
       kleur "^2.0.1"
       sisteransi "^0.1.1"
   
-  prop-types@15.x, prop-types@^15.5.0, prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.6, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@^15.5.9, prop-types@^15.6.0, prop-types@^15.6.2:
+  prop-types@15.x, prop-types@^15.5.0, prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.6, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@^15.5.9, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2:
     version "15.6.2"
     resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.2.tgz#05d5ca77b4453e985d60fc7ff8c859094a497102"
     dependencies:
@@ -7139,7 +7247,7 @@ Lockfile:
     dependencies:
       performance-now "^2.1.0"
   
-  raf@^3.4.0:
+  raf@^3.3.0, raf@^3.4.0:
     version "3.4.1"
     resolved "https://registry.yarnpkg.com/raf/-/raf-3.4.1.tgz#0742e99a4a6552f445d73e3ee0328af0ff1ede39"
     dependencies:
@@ -7605,6 +7713,10 @@ Lockfile:
     version "5.1.0"
     resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-5.1.0.tgz#c516995a5652e7bfbed8b497910d5280df74a7e8"
   
+  react-is@^16.3.2:
+    version "16.6.1"
+    resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.6.1.tgz#f77b1c3d901be300abe8d58645b7a59e794e5982"
+  
   react-lazy-load@^3.0.13:
     version "3.0.13"
     resolved "https://registry.yarnpkg.com/react-lazy-load/-/react-lazy-load-3.0.13.tgz#3b0a92d336d43d3f0d73cbe6f35b17050b08b824"
@@ -7617,6 +7729,29 @@ Lockfile:
   react-lifecycles-compat@^3.0.2, react-lifecycles-compat@^3.0.4:
     version "3.0.4"
     resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
+  
+  react-router-dom@^4.3.1:
+    version "4.3.1"
+    resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-4.3.1.tgz#4c2619fc24c4fa87c9fd18f4fb4a43fe63fbd5c6"
+    dependencies:
+      history "^4.7.2"
+      invariant "^2.2.4"
+      loose-envify "^1.3.1"
+      prop-types "^15.6.1"
+      react-router "^4.3.1"
+      warning "^4.0.1"
+  
+  react-router@^4.3.1:
+    version "4.3.1"
+    resolved "https://registry.yarnpkg.com/react-router/-/react-router-4.3.1.tgz#aada4aef14c809cb2e686b05cee4742234506c4e"
+    dependencies:
+      history "^4.7.2"
+      hoist-non-react-statics "^2.5.0"
+      invariant "^2.2.4"
+      loose-envify "^1.3.1"
+      path-to-regexp "^1.7.0"
+      prop-types "^15.6.1"
+      warning "^4.0.1"
   
   react-slick@~0.23.2:
     version "0.23.2"
@@ -7746,7 +7881,7 @@ Lockfile:
       extend-shallow "^3.0.2"
       safe-regex "^1.1.0"
   
-  regexpp@^2.0.0:
+  regexpp@^2.0.1:
     version "2.0.1"
     resolved "https://registry.yarnpkg.com/regexpp/-/regexpp-2.0.1.tgz#8d19d31cf632482b589049f8281f93dbcba4d07f"
   
@@ -7907,6 +8042,10 @@ Lockfile:
   resolve-from@^3.0.0:
     version "3.0.0"
     resolved "https://registry.yarnpkg.com/resolve-from/-/resolve-from-3.0.0.tgz#b22c7af7d9d6881bc8b6e653335eebcb0a188748"
+  
+  resolve-pathname@^2.2.0:
+    version "2.2.0"
+    resolved "https://registry.yarnpkg.com/resolve-pathname/-/resolve-pathname-2.2.0.tgz#7e9ae21ed815fd63ab189adeee64dc831eefa879"
   
   resolve-url@^0.2.1:
     version "0.2.1"
@@ -8221,10 +8360,12 @@ Lockfile:
     version "1.0.0"
     resolved "https://registry.yarnpkg.com/slash/-/slash-1.0.0.tgz#c41f2f6c39fc16d1cd17ad4b5d896114ae470d55"
   
-  slice-ansi@1.0.0:
-    version "1.0.0"
-    resolved "https://registry.yarnpkg.com/slice-ansi/-/slice-ansi-1.0.0.tgz#044f1a49d8842ff307aad6b505ed178bd950134d"
+  slice-ansi@2.0.0:
+    version "2.0.0"
+    resolved "https://registry.yarnpkg.com/slice-ansi/-/slice-ansi-2.0.0.tgz#5373bdb8559b45676e8541c66916cdd6251612e7"
     dependencies:
+      ansi-styles "^3.2.0"
+      astral-regex "^1.0.0"
       is-fullwidth-code-point "^2.0.0"
   
   snapdragon-node@^2.0.1:
@@ -8503,6 +8644,12 @@ Lockfile:
     dependencies:
       ansi-regex "^2.0.0"
   
+  strip-ansi@^5.0.0:
+    version "5.0.0"
+    resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-5.0.0.tgz#f78f68b5d0866c20b2c9b8c61b5298508dc8756f"
+    dependencies:
+      ansi-regex "^4.0.0"
+  
   strip-bom@3.0.0, strip-bom@^3.0.0:
     version "3.0.0"
     resolved "https://registry.yarnpkg.com/strip-bom/-/strip-bom-3.0.0.tgz#2334c18e9c759f7bdd56fdef7e9ae3d588e68ed3"
@@ -8582,15 +8729,13 @@ Lockfile:
     version "3.2.2"
     resolved "https://registry.yarnpkg.com/symbol-tree/-/symbol-tree-3.2.2.tgz#ae27db38f660a7ae2e1c3b7d1bc290819b8519e6"
   
-  table@^4.0.3:
-    version "4.0.3"
-    resolved "http://registry.npmjs.org/table/-/table-4.0.3.tgz#00b5e2b602f1794b9acaf9ca908a76386a7813bc"
+  table@^5.0.2:
+    version "5.1.1"
+    resolved "https://registry.yarnpkg.com/table/-/table-5.1.1.tgz#92030192f1b7b51b6eeab23ed416862e47b70837"
     dependencies:
-      ajv "^6.0.1"
-      ajv-keywords "^3.0.0"
-      chalk "^2.1.0"
-      lodash "^4.17.4"
-      slice-ansi "1.0.0"
+      ajv "^6.6.1"
+      lodash "^4.17.11"
+      slice-ansi "2.0.0"
       string-width "^2.1.1"
   
   tapable@^1.0.0, tapable@^1.1.0:
@@ -8966,6 +9111,10 @@ Lockfile:
     dependencies:
       spdx-correct "^3.0.0"
       spdx-expression-parse "^3.0.0"
+  
+  value-equal@^0.4.0:
+    version "0.4.0"
+    resolved "https://registry.yarnpkg.com/value-equal/-/value-equal-0.4.0.tgz#c5bdd2f54ee093c04839d71ce2e4758a6890abc7"
   
   vary@~1.1.2:
     version "1.1.2"

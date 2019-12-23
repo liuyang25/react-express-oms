@@ -38,8 +38,9 @@ const shouldInlineRuntimeChunk = process.env.INLINE_RUNTIME_CHUNK !== 'false';
 // as %PUBLIC_URL% in `index.html` and `process.env.PUBLIC_URL` in JavaScript.
 // Omit trailing slash as %PUBLIC_URL%/xyz looks better than %PUBLIC_URL%xyz.
 const publicUrl = publicPath.slice(0, -1);
+const baseApi = 'http://teldrasil.top:9999/api'
 // Get environment variables to inject into our app.
-const env = getClientEnvironment(publicUrl);
+const env = getClientEnvironment(publicUrl, baseApi);
 
 // Assert this just to be safe.
 // Development builds of React are slow and not intended for production.
@@ -57,7 +58,7 @@ const lessRegex = /\.(less)$/;
 const lessModuleRegex = /\.module\.(less)$/;
 
 // common function to get style loaders
-const getStyleLoaders = (cssOptions, preProcessor) => {
+const getStyleLoaders = (cssOptions, preProcessor, preProcessorOptions) => {
   const loaders = [
     {
       loader: MiniCssExtractPlugin.loader,
@@ -97,6 +98,7 @@ const getStyleLoaders = (cssOptions, preProcessor) => {
       loader: require.resolve(preProcessor),
       options: {
         sourceMap: shouldUseSourceMap,
+        javascriptEnabled: true,
       },
     });
   }
@@ -224,6 +226,7 @@ module.exports = {
       // Support React Native Web
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
       'react-native': 'react-native-web',
+      '@': path.resolve('src')
     },
     plugins: [
       // Adds support for installing with Plug'n'Play, leading to faster installs and adding
@@ -260,7 +263,7 @@ module.exports = {
             options: {
               formatter: require.resolve('react-dev-utils/eslintFormatter'),
               eslintPath: require.resolve('eslint'),
-              plugins: [["import", { "libraryName": "antd", "style": true }]], 
+              //plugins: [["import", { "libraryName": "antd", "style": true }]], 
             },
             loader: require.resolve('eslint-loader'),
           },
@@ -400,7 +403,10 @@ module.exports = {
                 modules: true,
                 getLocalIdent: getCSSModuleLocalIdent,
               },
-              'less-loader'
+              'less-loader',
+              {
+                javascriptEnabled: true
+              }
             ),
           },
           // "file" loader makes sure assets end up in the `build` folder.
