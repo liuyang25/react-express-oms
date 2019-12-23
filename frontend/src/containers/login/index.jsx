@@ -100,6 +100,9 @@ class Login extends React.Component<Props> {
             Or <a href="/login">register now!</a>
           </FormItem>
         </Form>
+        <div className="foot">
+          <a href="http://www.beian.miit.gov.cn/">粤ICP备19157918号</a>
+        </div>
       </div>
     )
   }

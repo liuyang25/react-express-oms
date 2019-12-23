@@ -164,7 +164,12 @@ class Main extends React.Component<Props> {
                 {this.props.loginStore.userName ? mainIndex() : jumpLogin()}
               </Card>
               <Footer style={{ textAlign: 'center' }} className="footer">
-                mail:liuyang25@126.com
+                <div>
+                  <a href="http://www.beian.miit.gov.cn/">粤ICP备19157918号</a>
+                </div>
+                <div>
+                  EMail: <a href="mailto:liuyang25@126.com">liuyang25@126.com</a>
+                </div>
               </Footer>
             </Content>
           </Layout>
